@@ -139,6 +139,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Tweet.cpp" />
     <ClCompile Include="tweetExample.cpp" />
   </ItemGroup>
   <ItemGroup>
