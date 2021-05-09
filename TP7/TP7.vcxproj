@@ -139,11 +139,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="main.cpp" />
     <ClCompile Include="Tweet.cpp" />
-    <ClCompile Include="tweetExample.cpp" />
+    <ClCompile Include="TwitterAPI.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Tweet.h" />
+    <ClInclude Include="TwitterAPI.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

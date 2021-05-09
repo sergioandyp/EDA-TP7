@@ -15,15 +15,21 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="tweetExample.cpp">
+    <ClCompile Include="Tweet.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Tweet.cpp">
+    <ClCompile Include="TwitterAPI.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Tweet.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TwitterAPI.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -12,9 +12,9 @@ public:
 	std::string getUser();
 
 private:
+	std::string user;
 	std::string text;
 	std::string date;
-	std::string user;
 };
 
 #endif

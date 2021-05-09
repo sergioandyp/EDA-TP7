@@ -11,7 +11,6 @@ using json = nlohmann::json;
 void printNames(std::list<std::string> names);
 static size_t myCallback(void* contents, size_t size, size_t nmemb, void* userp);
 
-//string
 
 /*
 * Main de prueba.
