@@ -15,12 +15,22 @@ int main() {
 
 	cin >> user >> count;
 
-	vector<Tweet> tweets;
 
-	if (!TwitterAPI::getTweets(user, count, tweets)) {
-		cout << "No se pudo obtener los tweets" << endl;
+	TwitterAPI api;
+
+	if (!api.startTweetsDownload(user, count)) {
+		cout << "No se pudo obtener los tweets: " << endl;
+		cout << api.getError() << endl;
 		return 0;
 	}
+
+	while (api.runDownload()) {
+		cout << "Descargando..." << endl;
+	}
+
+	vector<Tweet> tweets;
+
+	api.getTweets(tweets);
 
 	cout << "Tweets retrieved from Twitter account: " << endl;
 	printTweets(tweets);
@@ -40,3 +50,4 @@ void printTweets(vector<Tweet>& tweets)
 		std::cout << "-----------------------------------------" << std::endl;
 	}
 }
+

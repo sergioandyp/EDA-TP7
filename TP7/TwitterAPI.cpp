@@ -1,6 +1,7 @@
 #include "TwitterAPI.h"
-#include <curl/curl.h>
 #include <iostream>
+#include <iomanip>
+#include <sstream>
 
 // URL base de la API de Twitter que se va a utilizar, luego se agregan los parametros
 #define API_BASE_URL	"https://api.twitter.com/1.1/statuses/user_timeline.json"
@@ -16,85 +17,18 @@ using json = nlohmann::json;
 static size_t myCallback(void* contents, size_t size, size_t nmemb, void* userp);
 
 
-bool TwitterAPI::getTweets(string user, unsigned int count, vector<Tweet>& tweets) {
+bool TwitterAPI::startTweetsDownload(string user, unsigned int count) {
 
-	json response;
-
-	if (!getTweetsResponse(user, count, response)) return 0;
-
-	try
-	{
-		if (response.empty()) {
-			error = "Error: User has no tweets to show";
-			return 0;
-		}
-
-		if (response.find("errors") == response.end()) {		// Vemos si la request se hizo bien
-			//Al ser el JSON un arreglo de objetos JSON se busca el campo text para cada elemento
-			for (auto tweet : response) {
-				string tweet_user = tweet["user"]["name"];
-				string tweet_date = tweet["created_at"];
-				string tweet_text = tweet["text"];
-				
-				// Si esta truncado, o retwiteado saco el link del final
-				if (tweet["truncated"] || tweet.find("retweeted_status") != tweet.end()) {
-					tweet_text = tweet_text.substr(0, tweet_text.rfind(" https"));
-					tweet_text += "...";
-				}
-				
-				tweets.push_back(Tweet(tweet_user, tweet_text, tweet_date));
-			}
-		}
-		else {
-			error = "Error from Twitter API: \n";
-			for (auto e : response["errors"]) {
-				error += "Error " + string(e["code"]) + ": " + string(e["message"]);
-			}
-			return 0;
-		}
-
-
-	}
-	catch (exception& e)
-	{
-		//Muestro si hubo un error de la libreria
-		error = e.what();
-		return 0;
-	}
-
-	return 1;
-
-}
-
-bool TwitterAPI::getTweetsResponse(string user, unsigned int count, json& response) {
-	
 	string token = BEARER_TOKEN;
 
-	string query = API_BASE_URL;
-
-	map<string, string> params;
-	params["screen_name"] = user;
-	//params["exclude_replies"] = "true";
-	if (count>0) params["count"] = to_string(count);
-
-	query += '?';
-	for (auto i : params) {
-		query += i.first + '=' + i.second + '&';
-	}
-
-	if (*(query.end() - 1) == '&') {
-		query.pop_back();
-	}
+	string query = makeQuery(user, count);
 
 #ifdef DEBUG
 	cout << "El query es: " << query << endl;
 #endif
 
-	CURL* curl = curl_easy_init();
-	CURLM* multiHandle = curl_multi_init();
-	CURLMcode res;
-
-	string readString = "";
+	curl = curl_easy_init();
+	multiHandle = curl_multi_init();
 
 	if ((curl != NULL) & (multiHandle != NULL))
 	{
@@ -115,37 +49,116 @@ bool TwitterAPI::getTweetsResponse(string user, unsigned int count, json& respon
 
 		// Seteamos los callback
 		curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, myCallback);
-		curl_easy_setopt(curl, CURLOPT_WRITEDATA, &readString);
+		curl_easy_setopt(curl, CURLOPT_WRITEDATA, &response);
 
-		int stillRunning = 0;
 		// Realizamos ahora un perform no bloqueante
-		res = curl_multi_perform(multiHandle, &stillRunning);
-		while (stillRunning)
-		{
-			// Debemos hacer polling de la transferencia hasta que haya terminado
-			res = curl_multi_perform(multiHandle, &stillRunning);
-
-			// Mientras tanto podemos hacer otras cosas
-
-			// COMO PODER CANCELARLO Y ESAS COSAS
-
-
-		}
-
-		// Siempre realizamos el cleanup al final
-		curl_easy_cleanup(curl);
-
-		// Checkeamos errores
-		if (res != CURLM_OK)
-		{
-			error = "Error en la conexion con la API de Twitter";
+		if (curl_multi_perform(multiHandle, &runningDownload) != CURLM_OK) {
+			error = "Curl perform return a error";
+			state = WAITING;
 			return 0;
 		}
+
+	}
+	else {
+		error = "Cannot download tweets. Unable to start cURL";
+		state = WAITING;
+		return 0;
+	}
+
+	state = RUNNING;
+	return 1;	// Salida sin error
+}
+
+
+bool TwitterAPI::runDownload() {
+	if (state == RUNNING && runningDownload) {
+		CURLMcode res = curl_multi_perform(multiHandle, &runningDownload);
+		if (!runningDownload) {	// Fin de la descarga
+			stopDownload();
+			state = READY;
+			return 0;
+		}
+		
+		if (res == CURLM_OK) return 1;
+		else stopDownload();
+	}
+	
+	// Error
+	return 0;
+}
+
+void TwitterAPI::stopDownload() {
+	curl_multi_remove_handle(multiHandle, curl);
+	curl_easy_cleanup(curl);
+	curl_multi_cleanup(multiHandle);
+	runningDownload = false;
+	state = WAITING;
+}
+
+
+
+bool TwitterAPI::getTweets(vector<Tweet>& tweets) {
+
+	if (state == READY) {
+		json response;
+
+		if (!getTweetsResponse(response)) return 0;
+
+		try
+		{
+			if (response.empty()) {
+				error = "Error: User has no tweets to show";
+				return 0;
+			}
+
+			if (response.find("errors") == response.end()) {		// Vemos si la request se hizo bien
+				//Al ser el JSON un arreglo de objetos JSON se busca el campo para cada elemento
+				for (auto tweet : response) {
+					string tweet_user = tweet["user"]["name"];
+					string tweet_date = tweet["created_at"];
+					string tweet_text = tweet["text"];
+
+					// Si esta truncado, o retwiteado saco el link del final
+					if (tweet["truncated"] || tweet.find("retweeted_status") != tweet.end()) {
+						tweet_text = tweet_text.substr(0, tweet_text.rfind(" https"));
+						tweet_text += "...";
+					}
+
+					tweets.push_back(Tweet(tweet_user, tweet_text, tweet_date));
+				}
+			}
+			else {
+				error = "Error from Twitter API: \n";
+				for (auto e : response["errors"]) {
+					error += "Error " + string(e["code"]) + ": " + string(e["message"]);
+				}
+				return 0;
+			}
+
+
+		}
+		catch (exception& e)
+		{
+			// Devuelvo si hubo un error de la libreria
+			error = e.what();
+			return 0;
+		}
+
+		return 1;
+	}
+	else {
+		error = "Tweets are not ready yet";
+		return 0;
+	}
+
+}
+
+bool TwitterAPI::getTweetsResponse(json& responseJSON) {
 
 		// Si el request de CURL fue exitoso entonces twitter devuelve un JSON
 		// con toda la informacion de los tweets que le pedimos
 		try {
-			response = json::parse(readString);
+			responseJSON = json::parse(response);
 		}
 		catch (exception& e) {
 			error = "Error parsing response: " + string(e.what());
@@ -156,12 +169,6 @@ bool TwitterAPI::getTweetsResponse(string user, unsigned int count, json& respon
 		cout << response << endl;
 #endif
 
-	}
-	else {
-		error = "Cannot download tweets. Unable to start cURL";
-		return 0;
-	}
-
 	return 1;	// Salida sin error
 }
 
@@ -170,12 +177,34 @@ string TwitterAPI::getError() {
 	return error;
 }
 
+
+string TwitterAPI::makeQuery(string user, unsigned int count) {
+
+	string query = API_BASE_URL;
+
+	map<string, string> params;
+	params["screen_name"] = user;
+	//params["exclude_replies"] = "true";
+	if (count > 0) params["count"] = to_string(count);
+
+	query += '?';
+	for (auto i : params) {
+		query += i.first + '=' + i.second + '&';
+	}
+
+	if (*(query.end() - 1) == '&') {
+		query.pop_back();
+	}
+
+	return query;
+}
+
+
 //Concatena lo recibido en content a s
 static size_t myCallback(void* contents, size_t size, size_t nmemb, void* userp)
 {
 	size_t realsize = size * nmemb;
 	char* data = (char*)contents;
-	//fprintf(stdout, "%s",data);
 	string* s = (string*)userp;
 	s->append(data, realsize);
 	return realsize;						//recordar siempre devolver realsize
