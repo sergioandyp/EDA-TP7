@@ -2,10 +2,13 @@
 #include <curl/curl.h>
 #include <iostream>
 
-// Bearer Token generado directamente desde la Developer Console de Twitter
-#define BEARER_TOKEN "AAAAAAAAAAAAAAAAAAAAAHE8PQEAAAAAlZ%2BWWSwi%2B%2FbKZDlTAfGzWY%2BM7eo%3DB8WeqY3ZZOxTHfuzcaodd5StXAPFa3qp9Vfo1Svg3aE68egkqV"
+// URL base de la API de Twitter que se va a utilizar, luego se agregan los parametros
+#define API_BASE_URL	"https://api.twitter.com/1.1/statuses/user_timeline.json"
 
-//#define DEBUG
+// Bearer Token generado directamente desde la Developer Console de Twitter
+#define BEARER_TOKEN	"AAAAAAAAAAAAAAAAAAAAAHE8PQEAAAAAlZ%2BWWSwi%2B%2FbKZDlTAfGzWY%2BM7eo%3DB8WeqY3ZZOxTHfuzcaodd5StXAPFa3qp9Vfo1Svg3aE68egkqV"
+
+//#define DEBUG		// Habilita los logs para debugear
 
 using namespace std;
 using json = nlohmann::json;
@@ -22,7 +25,7 @@ bool TwitterAPI::getTweets(string user, unsigned int count, vector<Tweet>& tweet
 	try
 	{
 		if (response.empty()) {
-			cout << "Error: User has no tweets to show" << endl;
+			error = "Error: User has no tweets to show";
 			return 0;
 		}
 
@@ -43,9 +46,9 @@ bool TwitterAPI::getTweets(string user, unsigned int count, vector<Tweet>& tweet
 			}
 		}
 		else {
-			cout << "Error from Twitter API:" << endl;
+			error = "Error from Twitter API: \n";
 			for (auto e : response["errors"]) {
-				cout << "Error " << e["code"] << ": " << e["message"] << endl;
+				error += "Error " + string(e["code"]) + ": " + string(e["message"]);
 			}
 			return 0;
 		}
@@ -55,7 +58,7 @@ bool TwitterAPI::getTweets(string user, unsigned int count, vector<Tweet>& tweet
 	catch (exception& e)
 	{
 		//Muestro si hubo un error de la libreria
-		cerr << e.what() << endl;
+		error = e.what();
 		return 0;
 	}
 
@@ -67,7 +70,7 @@ bool TwitterAPI::getTweetsResponse(string user, unsigned int count, json& respon
 	
 	string token = BEARER_TOKEN;
 
-	string query = "https://api.twitter.com/1.1/statuses/user_timeline.json";
+	string query = API_BASE_URL;
 
 	map<string, string> params;
 	params["screen_name"] = user;
@@ -83,7 +86,9 @@ bool TwitterAPI::getTweetsResponse(string user, unsigned int count, json& respon
 		query.pop_back();
 	}
 
+#ifdef DEBUG
 	cout << "El query es: " << query << endl;
+#endif
 
 	CURL* curl = curl_easy_init();
 	CURLM* multiHandle = curl_multi_init();
@@ -133,7 +138,7 @@ bool TwitterAPI::getTweetsResponse(string user, unsigned int count, json& respon
 		// Checkeamos errores
 		if (res != CURLM_OK)
 		{
-			cout << "Error en la conexion con la API de Twitter" << endl;
+			error = "Error en la conexion con la API de Twitter";
 			return 0;
 		}
 
@@ -143,7 +148,7 @@ bool TwitterAPI::getTweetsResponse(string user, unsigned int count, json& respon
 			response = json::parse(readString);
 		}
 		catch (exception& e) {
-			cout << "Error parsing response: " << e.what() << endl;
+			error = "Error parsing response: " + string(e.what());
 			return 0;
 		}
 
@@ -153,13 +158,17 @@ bool TwitterAPI::getTweetsResponse(string user, unsigned int count, json& respon
 
 	}
 	else {
-		cout << "Cannot download tweets. Unable to start cURL" << endl;
+		error = "Cannot download tweets. Unable to start cURL";
 		return 0;
 	}
 
 	return 1;	// Salida sin error
 }
 
+// Devuelvo el error
+string TwitterAPI::getError() {
+	return error;
+}
 
 //Concatena lo recibido en content a s
 static size_t myCallback(void* contents, size_t size, size_t nmemb, void* userp)
