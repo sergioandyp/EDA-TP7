@@ -139,6 +139,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="graphics.cpp" />
     <ClCompile Include="imGui\imgui.cpp" />
     <ClCompile Include="imGui\imgui_demo.cpp" />
     <ClCompile Include="imGui\imgui_draw.cpp" />
@@ -150,6 +151,7 @@
     <ClCompile Include="TwitterAPI.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="graphics.h" />
     <ClInclude Include="imGui\imconfig.h" />
     <ClInclude Include="imGui\imconfig_allegro5.h" />
     <ClInclude Include="imGui\imgui.h" />
