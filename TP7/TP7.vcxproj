@@ -139,11 +139,25 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="imGui\imgui.cpp" />
+    <ClCompile Include="imGui\imgui_demo.cpp" />
+    <ClCompile Include="imGui\imgui_draw.cpp" />
+    <ClCompile Include="imGui\imgui_impl_allegro5.cpp" />
+    <ClCompile Include="imGui\imgui_tables.cpp" />
+    <ClCompile Include="imGui\imgui_widgets.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Tweet.cpp" />
     <ClCompile Include="TwitterAPI.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="imGui\imconfig.h" />
+    <ClInclude Include="imGui\imconfig_allegro5.h" />
+    <ClInclude Include="imGui\imgui.h" />
+    <ClInclude Include="imGui\imgui_impl_allegro5.h" />
+    <ClInclude Include="imGui\imgui_internal.h" />
+    <ClInclude Include="imGui\imstb_rectpack.h" />
+    <ClInclude Include="imGui\imstb_textedit.h" />
+    <ClInclude Include="imGui\imstb_truetype.h" />
     <ClInclude Include="Tweet.h" />
     <ClInclude Include="TwitterAPI.h" />
   </ItemGroup>
