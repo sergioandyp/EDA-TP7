@@ -16,6 +16,11 @@ using json = nlohmann::json;
 
 static size_t myCallback(void* contents, size_t size, size_t nmemb, void* userp);
 
+// Recibe en time la fecha y hora en el formato de Twitter y
+// la devuelve en un formato de 16 caracteres.
+// Si devuelve 1, no hubo error y se devuelve en time el nuevo formato.
+// Si devuelve 0, huo error y time no se modifica.
+bool formatTime(string& time);
 
 bool TwitterAPI::startTweetsDownload(string user, unsigned int count) {
 
@@ -100,23 +105,31 @@ void TwitterAPI::stopDownload() {
 bool TwitterAPI::getTweets(vector<Tweet>& tweets) {
 
 	if (state == READY) {
-		json response;
 
-		if (!getTweetsResponse(response)) return 0;
+		state = WAITING;
+
+		json responseJSON;
+
+		if (!getTweetsResponse(responseJSON)) return 0;
 
 		try
 		{
-			if (response.empty()) {
+			if (responseJSON.empty()) {
 				error = "Error: User has no tweets to show";
 				return 0;
 			}
 
-			if (response.find("errors") == response.end()) {		// Vemos si la request se hizo bien
+			if (responseJSON.find("errors") == responseJSON.end()) {		// Vemos si la request se hizo bien
 				//Al ser el JSON un arreglo de objetos JSON se busca el campo para cada elemento
-				for (auto tweet : response) {
+				for (auto tweet : responseJSON) {
 					string tweet_user = tweet["user"]["name"];
-					string tweet_date = tweet["created_at"];
 					string tweet_text = tweet["text"];
+					string tweet_date = tweet["created_at"];
+
+					if (!formatTime(tweet_date)) {		// Se formatea la fecha a 16 caracteres
+						error = "Error parsing tweet date";
+						return 0;
+					}
 
 					// Si esta truncado, o retwiteado saco el link del final
 					if (tweet["truncated"] || tweet.find("retweeted_status") != tweet.end()) {
@@ -124,13 +137,18 @@ bool TwitterAPI::getTweets(vector<Tweet>& tweets) {
 						tweet_text += "...";
 					}
 
+#ifdef DEBUG
+					cout << tweet_user << " - " << tweet_date << " - " << tweet_text << endl;
+					cout << "_______________________________________________________________" << endl;
+#endif
+
 					tweets.push_back(Tweet(tweet_user, tweet_text, tweet_date));
 				}
 			}
 			else {
 				error = "Error from Twitter API: \n";
-				for (auto e : response["errors"]) {
-					error += "Error " + string(e["code"]) + ": " + string(e["message"]);
+				for (auto& e : responseJSON["errors"]) {
+					error += "Error " + to_string(e["code"]) + ": " + string(e["message"]);
 				}
 				return 0;
 			}
@@ -185,6 +203,7 @@ string TwitterAPI::makeQuery(string user, unsigned int count) {
 	map<string, string> params;
 	params["screen_name"] = user;
 	//params["exclude_replies"] = "true";
+	//params["include_rts"] = "false";
 	if (count > 0) params["count"] = to_string(count);
 
 	query += '?';
@@ -199,6 +218,25 @@ string TwitterAPI::makeQuery(string user, unsigned int count) {
 	return query;
 }
 
+// Recibe en time la fecha y hora en el formato de Twitter y
+// la devuelve en un formato de 16 caracteres.
+// Si devuelve 1, no hubo error y se devuelve en time el nuevo formato.
+// Si devuelve 0, huo error y time no se modifica.
+bool formatTime(string& time) {
+	tm t = {};
+	stringstream ss(time);
+	ss >> get_time(&t, "%a %b %d %H:%M:%S +0000 %Y"); // Parseamos la fecha y hora segun el formato de Twitter
+
+	if (ss.fail()) {
+		return 0;
+	}
+	else {
+		stringstream res;		// Un nuevo stream para no pisar el anterior
+		res << put_time(&t, "%d/%m/%y - %H:%M");
+		time = res.str();
+		return 1;
+	}
+}
 
 //Concatena lo recibido en content a s
 static size_t myCallback(void* contents, size_t size, size_t nmemb, void* userp)
