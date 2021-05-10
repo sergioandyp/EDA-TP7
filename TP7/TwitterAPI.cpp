@@ -22,6 +22,12 @@ static size_t myCallback(void* contents, size_t size, size_t nmemb, void* userp)
 // Si devuelve 0, huo error y time no se modifica.
 bool formatTime(string& time);
 
+
+TwitterAPI::TwitterAPI() : 
+	error(), state(WAITING), response(), runningDownload(false), curl(), multiHandle()
+{
+}
+
 bool TwitterAPI::startTweetsDownload(string user, unsigned int count) {
 
 	string token = BEARER_TOKEN;
@@ -55,6 +61,7 @@ bool TwitterAPI::startTweetsDownload(string user, unsigned int count) {
 		// Seteamos los callback
 		curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, myCallback);
 		curl_easy_setopt(curl, CURLOPT_WRITEDATA, &response);
+		response = "";	// Vaciamos la response por si contiene una respuesta anterior
 
 		// Realizamos ahora un perform no bloqueante
 		if (curl_multi_perform(multiHandle, &runningDownload) != CURLM_OK) {
@@ -74,6 +81,9 @@ bool TwitterAPI::startTweetsDownload(string user, unsigned int count) {
 	return 1;	// Salida sin error
 }
 
+bool TwitterAPI::startTweetsDownload(string user) {
+	return startTweetsDownload(user, -1);
+}
 
 bool TwitterAPI::runDownload() {
 	if (state == RUNNING && runningDownload) {

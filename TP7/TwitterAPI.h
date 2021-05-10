@@ -15,6 +15,8 @@ enum STATE { WAITING, RUNNING, READY };
 class TwitterAPI {
 public:
 
+	TwitterAPI();
+
 	// Comienza la decarga de tweets del usuario especificado
 	// Tener en cuenta que la cantidad de tweets puede ser menor al count pasado
 	bool startTweetsDownload(std::string user, unsigned int count);
@@ -51,7 +53,6 @@ private:
 	bool getTweetsResponse(nlohmann::json& response);
 
 	std::string makeQuery(std::string user, unsigned int count);
-	std::string makeQuery(std::string user);
 };
 
 #endif
