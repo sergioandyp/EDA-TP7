@@ -6,6 +6,7 @@
 class Config {
 public:
     Config();
+    Config(float speed_, std::string user_, int count_);
     float getSpeed();
     std::string getUser();
     int getTweetCount();
