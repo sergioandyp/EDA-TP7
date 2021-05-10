@@ -139,6 +139,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="basicLCD.cpp" />
+    <ClCompile Include="Config.cpp" />
     <ClCompile Include="graphics.cpp" />
     <ClCompile Include="imGui\imgui.cpp" />
     <ClCompile Include="imGui\imgui_demo.cpp" />
@@ -147,10 +149,14 @@
     <ClCompile Include="imGui\imgui_tables.cpp" />
     <ClCompile Include="imGui\imgui_widgets.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="main1.cpp" />
+    <ClCompile Include="SergioLCD.cpp" />
     <ClCompile Include="Tweet.cpp" />
     <ClCompile Include="TwitterAPI.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="basicLCD.h" />
+    <ClInclude Include="Config.h" />
     <ClInclude Include="graphics.h" />
     <ClInclude Include="imGui\imconfig.h" />
     <ClInclude Include="imGui\imconfig_allegro5.h" />
@@ -160,8 +166,15 @@
     <ClInclude Include="imGui\imstb_rectpack.h" />
     <ClInclude Include="imGui\imstb_textedit.h" />
     <ClInclude Include="imGui\imstb_truetype.h" />
+    <ClInclude Include="SergioLCD.h" />
     <ClInclude Include="Tweet.h" />
     <ClInclude Include="TwitterAPI.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Font Include="sergioFont.ttf" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="sergioLCD.jpg" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

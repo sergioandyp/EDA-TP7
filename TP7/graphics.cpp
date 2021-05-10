@@ -4,17 +4,14 @@
 #include <allegro5/allegro_image.h>
 #include "imGui/imgui.h"
 #include "imGui/imgui_impl_allegro5.h"
+#include "Config.h"
 
 #include "graphics.h"
 
 using namespace std;
-ALLEGRO_DISPLAY* display;
-ALLEGRO_EVENT_QUEUE* eventQueue;
 
 
-
-
-int initGraphics(void) {
+int Graphics::initGraphics(void) {
 
     if (!al_init()) {
         cout << "Error al inicializar allegro\n";
@@ -45,14 +42,14 @@ int initGraphics(void) {
     return 1;
 }
 
-void destroyGraphics(void) {
+void Graphics::destroyGraphics(void) {
 
     ImGui_ImplAllegro5_Shutdown();
     ImGui::DestroyContext();
     al_destroy_display(display);
 }
 
-void drawInit(char* name, int& cantidadTweets, bool& doExit) {
+void Graphics::drawInit(char* name, int& cantidadTweets, bool& doExit) {
 
     ImGui_ImplAllegro5_NewFrame();
     ImGui::NewFrame();
@@ -88,10 +85,9 @@ void drawInit(char* name, int& cantidadTweets, bool& doExit) {
     ImGui::Render();
     ImGui_ImplAllegro5_RenderDrawData(ImGui::GetDrawData());
 
-
 }
 
-void drawConfig(float& vel, int& lcd, bool& doExit, bool& siguiente, bool& repetir, bool& anterior){
+void Graphics::drawConfig(Config& config, bool& doExit){
 
     ImGui_ImplAllegro5_NewFrame();
     ImGui::NewFrame();
@@ -117,24 +113,23 @@ void drawConfig(float& vel, int& lcd, bool& doExit, bool& siguiente, bool& repet
     ImGui::Begin("Configuraciones",NULL, window_flags);
     
     //Para variar la velocidad (número float que va desde 0 hasta MAX_VEL)
-    ImGui::SliderFloat("Velocidad", &vel, 0, MAX_VEL, "%.5f");
-    if (vel <= 0.0f) {
-        vel = 0.0f;
-    }
+    float speed = config.getSpeed();
+    ImGui::SliderFloat("Velocidad", &speed, 0, MAX_VEL, "%.5f");
+    config.setSpeed(speed);
 
     ImGui::SetCursorPosX(DISPLAY_X*0.3);
     ImGui::Text("LCD");
 
     if (ImGui::Button("1", ImVec2(ImGui::GetWindowSize().x*0.3, ImGui::GetWindowSize().y*0.15))){
-        lcd = 1;
+        lcd1 = true;
     }
     ImGui::SameLine();
     if (ImGui::Button("2", ImVec2(ImGui::GetWindowSize().x*0.3, ImGui::GetWindowSize().y*0.15))){
-        lcd = 2;
+        lcd2 = true;
     }
     ImGui::SameLine();
     if (ImGui::Button("3", ImVec2(ImGui::GetWindowSize().x*0.3, ImGui::GetWindowSize().y*0.15))){
-        lcd = 3;
+        lcd3 = true;
     }
 
  
@@ -156,4 +151,8 @@ void drawConfig(float& vel, int& lcd, bool& doExit, bool& siguiente, bool& repet
     ImGui::End();
     ImGui::Render();
     ImGui_ImplAllegro5_RenderDrawData(ImGui::GetDrawData());
+
+    //Experimento
+    ImGui_ImplAllegro5_NewFrame();
+    ImGui::NewFrame();
 }
