@@ -141,6 +141,7 @@
   <ItemGroup>
     <ClCompile Include="basicLCD.cpp" />
     <ClCompile Include="Config.cpp" />
+    <ClCompile Include="displayTest.cpp" />
     <ClCompile Include="graphics.cpp" />
     <ClCompile Include="imGui\imgui.cpp" />
     <ClCompile Include="imGui\imgui_demo.cpp" />

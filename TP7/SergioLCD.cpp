@@ -167,6 +167,8 @@ cursorPosition SergioLCD::lcdGetCursorPosition() {
 
 void SergioLCD::print() {
 
+	al_set_target_backbuffer(display);
+
 	al_draw_bitmap(image, 0, 0, NULL);
 
 	int x1 = START_X + cursor.column*(CHAR_W+CHAR_GAP) ;
