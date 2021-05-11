@@ -162,6 +162,7 @@
     <ClCompile Include="imGui\imgui_widgets.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="main1.cpp" />
+    <ClCompile Include="scrolling.cpp" />
     <ClCompile Include="SergioLCD.cpp" />
     <ClCompile Include="Tweet.cpp" />
     <ClCompile Include="TwitterAPI.cpp" />
@@ -178,6 +179,7 @@
     <ClInclude Include="imGui\imstb_rectpack.h" />
     <ClInclude Include="imGui\imstb_textedit.h" />
     <ClInclude Include="imGui\imstb_truetype.h" />
+    <ClInclude Include="scrolling.h" />
     <ClInclude Include="SergioLCD.h" />
     <ClInclude Include="Tweet.h" />
     <ClInclude Include="TwitterAPI.h" />
