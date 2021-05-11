@@ -129,7 +129,7 @@ bool TwitterAPI::getTweets(vector<Tweet>& tweets) {
 				return 0;
 			}
 
-			if (responseJSON.find("errors") == responseJSON.end()) {		// Vemos si la request se hizo bien
+			if (responseJSON.find("errors") == responseJSON.end() && responseJSON.find("error") == responseJSON.end()) {		// Vemos si la request se hizo bien
 				//Al ser el JSON un arreglo de objetos JSON se busca el campo para cada elemento
 				for (auto tweet : responseJSON) {
 					string tweet_user = tweet["user"]["name"];
@@ -157,8 +157,16 @@ bool TwitterAPI::getTweets(vector<Tweet>& tweets) {
 			}
 			else {
 				error = "Error from Twitter API: \n";
-				for (auto& e : responseJSON["errors"]) {
-					error += "Error " + to_string(e["code"]) + ": " + string(e["message"]);
+				if (responseJSON.find("errors") != responseJSON.end()) {
+					for (auto& e : responseJSON["errors"]) {
+						error += "Error " + to_string(e["code"]) + ": " + string(e["message"]);
+					}
+				}
+				else if (responseJSON.find("error") != responseJSON.end()) {
+					error += "Error: " + string(responseJSON["error"]);
+				}
+				else {
+					error += "Unexpected error received";
 				}
 				return 0;
 			}
