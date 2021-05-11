@@ -7,6 +7,8 @@
 #include "graphics.h"
 #include <string>
 
+#include "TwitterAPI.h"
+
 #define MAX_VEL 10
 #define INIT_VEL 5
 using namespace std;
@@ -15,19 +17,19 @@ int main(void) {
 
 
     //CONFIGURACIONES PARA EMPEZAR
-    char usuario[10];
+    char usuario[10] = "";
     int cantidadTweets=0;
 
     //CONFIGURACIONES MIENTRAS MUESTRO
     bool doExit = false;
     int lcd = 0;
-    float velocidad = INIT_VEL;
-    bool siguiente=false;
-    bool repetir = false;
-    bool anterior=false;
+    
+    Config conf(INIT_VEL, usuario, cantidadTweets);
+
+    Graphics gui;
 
     //Inicializo la parte gráfica: display de allegro, imGui, cola de eventos de allegro... 
-    if (!initGraphics()) {
+    if (!gui.initGraphics()) {
         return 1;
     }
 
@@ -35,18 +37,47 @@ int main(void) {
     while (!doExit) {
 
         //Dibujo las configuraiones dentro del display
-        drawInit(usuario, cantidadTweets, doExit);
+        gui.drawInit(usuario, cantidadTweets, doExit);
 
     }
+
+    TwitterAPI api;
+
+    if (!api.startTweetsDownload(usuario, cantidadTweets)) {
+
+        // Imprimir al display que hubo error
+
+    	cout << "No se pudo obtener los tweets: " << endl;
+    	cout << api.getError() << endl;
+    	return 0;
+    }
+    
+    while (api.runDownload()) {
+    	cout << "Descargando..." << endl;
+        
+        // Aca pantalla de de que está descargando y poder detenerlo
+
+    }
+    
+    vector<Tweet> tweets;
+    
+    if (!api.getTweets(tweets)) {
+
+        // Imprimir al display que hubo error
+
+    	cout << "Error al obtener los tweets: " << endl << api.getError() << endl;
+    	return 0;
+    }
+
     doExit = false;
     while (!doExit) {
 
         //Dibujo las configuraiones dentro del display
-        drawConfig(velocidad, lcd,doExit, siguiente, repetir, anterior);
+        gui.drawConfig(conf, doExit);
 
     }
 
-    destroyGraphics();
+    gui.destroyGraphics();
 
 	return 0;
 }
