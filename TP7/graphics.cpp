@@ -71,10 +71,10 @@ void Graphics::drawInit(char* name, int& cantidadTweets, bool& doExit) {
             doExit = true;
     }
 
-   /*
-    ImGui::InputText("utuario", name, 6, NULL);*/
 
     ImGui::Begin("Ingresar Datos", NULL, window_flags);
+
+    ImGui::InputText("Nombre de usuario", name, 100);
     ImGui::InputInt("Cantidad de tweets", &cantidadTweets, 1, 10);
     if (cantidadTweets < 1) {
         cantidadTweets = 1;
@@ -152,7 +152,7 @@ void Graphics::drawConfig(Config& config, bool& doExit){
     ImGui::Render();
     ImGui_ImplAllegro5_RenderDrawData(ImGui::GetDrawData());
 
-    //Experimento
-    ImGui_ImplAllegro5_NewFrame();
-    ImGui::NewFrame();
+    ////Experimento
+    //ImGui_ImplAllegro5_NewFrame();
+    //ImGui::NewFrame();
 }

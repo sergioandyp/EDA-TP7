@@ -40,6 +40,7 @@ int main(void) {
         gui.drawInit(usuario, cantidadTweets, doExit);
 
     }
+    cout << usuario << endl;
 
     TwitterAPI api;
 
@@ -51,8 +52,10 @@ int main(void) {
     	cout << api.getError() << endl;
     	return 0;
     }
+
     
     while (api.runDownload()) {
+        cout << api.runDownload() << endl;
     	cout << "Descargando..." << endl;
         
         // Aca pantalla de de que está descargando y poder detenerlo
@@ -67,6 +70,12 @@ int main(void) {
 
     	cout << "Error al obtener los tweets: " << endl << api.getError() << endl;
     	return 0;
+    }
+
+    for (auto& t : tweets)
+    {
+        cout << t.getDate() << " - " << t.getUser() << " - " << t.getText() << endl;
+        std::cout << "-----------------------------------------" << std::endl;
     }
 
     doExit = false;
