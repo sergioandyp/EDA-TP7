@@ -22,7 +22,7 @@ public:
 	void drawConfig(Config& config, bool& doExit);
 
 	//Permite ingresar el nombre de usiario de Twitter y la cantidad de Twets
-	void drawInit(char* name, int& cantidadTweets, bool& doExit);
+	void drawInit(Config& config, bool& doExit);
 
 private:
 	ALLEGRO_DISPLAY* display;

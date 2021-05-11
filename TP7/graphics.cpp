@@ -8,6 +8,9 @@
 
 #include "graphics.h"
 
+//Para poder usar la función strcpy.
+#pragma warning(disable : 4996)
+
 using namespace std;
 
 
@@ -49,7 +52,16 @@ void Graphics::destroyGraphics(void) {
     al_destroy_display(display);
 }
 
-void Graphics::drawInit(char* name, int& cantidadTweets, bool& doExit) {
+void Graphics::drawInit(Config& config, bool& doExit) {
+
+    int tempTweetCount = config.getTweetCount();
+    char tempUser[100] = {};
+    strcpy(tempUser, config.getUser().c_str());
+    //string tempStringUser=config.getUser();
+    //char* ptrTempUser[100] = tempStringUser.c_str();
+
+
+    
 
     ImGui_ImplAllegro5_NewFrame();
     ImGui::NewFrame();
@@ -74,11 +86,14 @@ void Graphics::drawInit(char* name, int& cantidadTweets, bool& doExit) {
 
     ImGui::Begin("Ingresar Datos", NULL, window_flags);
 
-    ImGui::InputText("Nombre de usuario", name, 100);
-    ImGui::InputInt("Cantidad de tweets", &cantidadTweets, 1, 10);
-    if (cantidadTweets < 1) {
-        cantidadTweets = 1;
+    ImGui::InputText("Nombre de Usuario", tempUser, 100);
+    config.setUser(tempUser);
+ 
+    ImGui::InputInt("Cantidad de tweets",&tempTweetCount, 1, 10);
+    if (tempTweetCount < 1) {
+        tempTweetCount = 1;
     }
+    config.setTweetCount(tempTweetCount);
 
     al_flip_display();
     ImGui::End();

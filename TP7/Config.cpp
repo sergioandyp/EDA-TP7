@@ -8,6 +8,7 @@ Config::Config() : speed(), user(), tweetCount()
 
 Config::Config(float speed_, string user_, int count_) : speed(speed_), user(user_), tweetCount(count_)
 {
+
 }
 
 float Config::getSpeed() {

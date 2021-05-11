@@ -37,14 +37,14 @@ int main(void) {
     while (!doExit) {
 
         //Dibujo las configuraiones dentro del display
-        gui.drawInit(usuario, cantidadTweets, doExit);
+        gui.drawInit(conf, doExit);
 
     }
-    cout << usuario << endl;
+    cout << conf.getUser() << "fin" << endl;
 
     TwitterAPI api;
 
-    if (!api.startTweetsDownload(usuario, cantidadTweets)) {
+    if (!api.startTweetsDownload(conf.getUser(), conf.getTweetCount())) {
 
         // Imprimir al display que hubo error
 
@@ -53,7 +53,8 @@ int main(void) {
     	return 0;
     }
 
-    
+
+
     while (api.runDownload()) {
         cout << api.runDownload() << endl;
     	cout << "Descargando..." << endl;
