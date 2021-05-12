@@ -3,6 +3,13 @@
 #define GRAPHICS_H
 
 #include <allegro5/allegro.h>
+#include<iostream>
+#include <allegro5/allegro.h>
+#include <allegro5/allegro_color.h>
+#include <allegro5/allegro_image.h>
+#include <allegro5/allegro_font.h>
+#include <allegro5/allegro_ttf.h>
+#include <allegro5/allegro_primitives.h>
 #include "Config.h"
 
 #define MAX_VEL 10
@@ -36,4 +43,18 @@ private:
 	bool repetir;
 	bool anterior;
 };
+
+extern ALLEGRO_EVENT_QUEUE* event_queue;
+
+enum ERRORES		// Distintos tipos de errores
+{
+	NO_ERROR = -2,
+	ERROR = -1
+};
+
+/*******************************************************************************
+ * FUNCTION PROTOTYPES FOR PRIVATE FUNCTIONS WITH FILE LEVEL SCOPE
+ ******************************************************************************/
+ //Funcion que le da la bienvenida al usuario por allegro
+int init_allegro();
 #endif //GRAPHICS_H

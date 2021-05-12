@@ -2,7 +2,7 @@
 #pragma warning(disable : 4996).
 
 #include"basicLCD.h"
-#include "initallegro.h"
+#include "graphics.h"
 #include "string"			//pal tp nuevo
 
 using namespace std;

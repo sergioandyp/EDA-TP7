@@ -1,7 +1,7 @@
 #pragma once
 
 #include "basiclcd.h"
-#include "initallegro.h"
+#include "graphics.h"
 #include <string.h>
 
 #define SPACEY 20
