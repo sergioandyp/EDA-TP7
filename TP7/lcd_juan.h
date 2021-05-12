@@ -12,6 +12,15 @@
 #define W_PIXELS	COLS*SIZECARACT			// tamaño del display
 #define H_PIXELS	FILAS*SIZECARACT+SPACEY+20
 
+
+extern ALLEGRO_EVENT_QUEUE* event_queue;
+
+enum ERRORES		// Distintos tipos de errores
+{
+	NO_ERROR = -2,
+	ERROR = -1
+};
+
 class lcd : public basicLCD
 {
 public:

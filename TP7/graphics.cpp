@@ -206,8 +206,10 @@ void Graphics::drawConfig(Config& config, bool& doExit){
 }
 
 
-ALLEGRO_DISPLAY* display;
-ALLEGRO_EVENT_QUEUE* event_queue;
+//ALLEGRO_DISPLAY* display;
+//ALLEGRO_EVENT_QUEUE* event_queue;
+
+/*
 ALLEGRO_FONT* font;;
 
 int init_allegro() {            // incio allegro
@@ -243,3 +245,4 @@ int init_allegro() {            // incio allegro
 
     return NO_ERROR;
 }
+*/

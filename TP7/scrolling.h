@@ -5,6 +5,13 @@
 #include "graphics.h"
 #include "string"			//pal tp nuevo
 
+#include <allegro5/allegro.h>
+#include <allegro5/allegro_color.h>
+#include <allegro5/allegro_image.h>
+#include <allegro5/allegro_font.h>
+#include <allegro5/allegro_ttf.h>
+#include <allegro5/allegro_primitives.h>
+
 using namespace std;
 
 class scrolling
@@ -28,6 +35,7 @@ private:
 	bool error;
 	bool twitMostrado;
 	ALLEGRO_TIMER* timer = NULL;
+	ALLEGRO_EVENT_QUEUE* event_queue;
 	cursorPosition cursor;
 	void setVel(float vel);
 	string  completaString(string twit);

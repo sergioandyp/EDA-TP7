@@ -2,7 +2,7 @@
 #ifndef GRAPHICS_H
 #define GRAPHICS_H
 
-#include <allegro5/allegro.h>
+
 #include<iostream>
 #include <allegro5/allegro.h>
 #include <allegro5/allegro_color.h>
@@ -44,6 +44,7 @@ private:
 	bool anterior;
 };
 
+/*
 extern ALLEGRO_EVENT_QUEUE* event_queue;
 
 enum ERRORES		// Distintos tipos de errores
@@ -52,9 +53,8 @@ enum ERRORES		// Distintos tipos de errores
 	ERROR = -1
 };
 
-/*******************************************************************************
- * FUNCTION PROTOTYPES FOR PRIVATE FUNCTIONS WITH FILE LEVEL SCOPE
- ******************************************************************************/
  //Funcion que le da la bienvenida al usuario por allegro
 int init_allegro();
+*/
+
 #endif //GRAPHICS_H
