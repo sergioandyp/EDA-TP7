@@ -60,6 +60,15 @@
     <ClCompile Include="displayTest.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="scrolling.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="initallegro.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="lcd_juan.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Tweet.h">
@@ -102,6 +111,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Config.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="scrolling.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="initallegro.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="lcd_juan.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

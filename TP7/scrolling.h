@@ -2,34 +2,42 @@
 #pragma warning(disable : 4996).
 
 #include"basicLCD.h"
-
+#include "initallegro.h"
 #include "string"			//pal tp nuevo
+
+using namespace std;
 
 class scrolling
 {
 public:
 	void setcompleto(int completo);
 	int getcompleto(void);
-	void ToDisplay(basicLCD* lcd, std::string twit, int letras);
 	float getVel(void);
-	void setVel(float vel);
-	//void strings(basicLCD* lcd, std::string twit, int letras);
+
 	scrolling();
-	//void movimiento(basicLCD* lcd, const unsigned char* c, int letra,int len);
+	~scrolling();
+	bool scrollingOK(void);
+	bool timerDisplay(basicLCD* lcd, string twit, float velocidad);
 
 private:
-	int cola;
+	int contador;
 	bool completo;
 	float vel;
 	int posicion;
 	char* cstr;
+	bool error;
+	bool twitMostrado;
+	ALLEGRO_TIMER* timer = NULL;
 	cursorPosition cursor;
+	void setVel(float vel);
+	string  completaString(string twit);
+	void ToDisplay(basicLCD* lcd, std::string twit, int letras);
 	void printToDisplay(basicLCD* lcd, const unsigned char c);
 	void movechar(basicLCD* lcd, int cursor, const unsigned char c);
 	void movimiento(basicLCD* lcd, std::string twit, int letra);
 	void movimFinal(basicLCD* lcd, std::string twit);
-	std::string divisor(std::string twit);
-	int modulo(int len);
+	bool initallegro(void);
+
 
 };
 

@@ -3,12 +3,49 @@
 #include"scrolling.h"
 #include"basicLCD.h"
 
-scrolling::scrolling() {
-	cola = 1;
-	completo = 0;
-	vel = 1.0;
-	posicion = 0;
 
+
+scrolling::scrolling() {
+	cstr = NULL;
+	vel = 0.0;
+	completo = 0;
+	posicion = 0;
+	contador = 0;
+	twitMostrado = false;
+	if (true == initallegro()) {
+		error = false;
+	}
+	else
+	{
+		error = true;
+	}
+}
+scrolling::~scrolling() {
+	al_destroy_event_queue(event_queue);
+	al_destroy_timer(timer);
+}
+bool scrolling::initallegro(void) {
+	if (!al_init()) {
+		cout << "failed to initialize allegro!!" << endl;
+		return false;
+	}
+
+	event_queue = al_create_event_queue();
+	if (!event_queue) {
+		cout << "failed to load event queue!" << endl;
+		al_destroy_timer(timer);
+		return false;
+	}
+	return true;
+}
+bool scrolling::scrollingOK(void) {
+	if (error == true) {
+		return false;
+	}
+	else
+	{
+		return true;
+	}
 }
 
 void scrolling::printToDisplay(basicLCD* lcd, const unsigned char c) {
@@ -41,21 +78,71 @@ void scrolling::movechar(basicLCD* lcd, int cursor, const unsigned char c) {
 //	}
 //}
 
+bool scrolling::timerDisplay(basicLCD* lcd, string twit, float velocidad) {
+	setVel(velocidad);
+	if (true == scrollingOK()) {
+		ALLEGRO_EVENT ev;
+		if (twitMostrado == true) {
+			return true;
+			cout << "timerDisplay" << endl;
+		}
+		if (al_get_next_event(event_queue, &ev)) //Toma un evento de la cola, .
+		{
+			if (ev.type == ALLEGRO_EVENT_TIMER) {
+				contador++;
+				ToDisplay(lcd, twit, contador);
+				return false;
+			}
+			else {
+				return false;
+			}
+		}
+
+	}
+	else {
+		return false;
+	}
+}
+
+
+
+
+
+
+
+
 void scrolling::movimiento(basicLCD* lcd, std::string twit, int letra) {
 	cursor.column = 15;
 	cursor.row = 1;
-	if (letra < twit.length() + 1) {
-		std::string str = twit.substr(0, letra);
+	std::string str;
+
+	if ((cursor.column - letra >= 0) && ((twit.length() + 1) >= 16)) {
+		str = twit.substr(posicion, letra);
 		char* cstr = new char[str.length() + 1];						//
 		std::strcpy(cstr, str.c_str());
 		cursor.column = cursor.column - letra;
 		//		cout << cursor.column << endl;
 		lcd->lcdSetCursorPosition(cursor);
-		(*lcd) << (const unsigned char*)cstr;
+		(*lcd) << (const  char*)cstr;
 
 		delete[] cstr;
-
 	}
+
+	//else if (letra < (twit.length() + 1)&& (letra + 15 == twit.length())) {
+
+	//	cursor.column = 0;
+	//	cout << "letra:" << (letra)<<"twit:"<< (twit.length() ) << endl;
+	//	lcd->lcdSetCursorPosition(cursor);
+	//	posicion += 1;
+	//	str = twit.substr(posicion, letra);
+	//	char* cstr = new char[str.length() + 1];						
+	//	std::strcpy(cstr, str.c_str());
+	//	cout << posicion << ' ' << letra << endl;
+	//	lcd->lcdSetCursorPosition(cursor);
+	//	(*lcd) << (const unsigned char*)cstr;
+	//	delete[] cstr;
+	//}
+
 	else {
 		completo = 1;
 	}
@@ -71,15 +158,15 @@ void scrolling::movimFinal(basicLCD* lcd, std::string twit) {
 		std::strcpy(cstr, str.c_str());
 		cursor.column = 0;
 		lcd->lcdSetCursorPosition(cursor);
-		(*lcd) << (const unsigned char*)cstr;
+		(*lcd) << (const  char*)cstr;
 		lcd->lcdClearToEOL();
-		//std::cout << posicion<< std::endl;
 		delete[] cstr;
 		posicion++;
 	}
 	else {
 		posicion = 0;
 		completo = 0;
+		twitMostrado = true;
 		cursor.column = 0;
 		cursor.row = 1;
 		lcd->lcdClearToEOL();
@@ -93,53 +180,51 @@ float scrolling::getVel(void) {
 	return this->vel;
 }
 void scrolling::setVel(float vel) {
-	this->vel = vel;
+	if (this->vel != vel) {
+
+		al_destroy_timer(timer);
+		cout << "setvel" << endl;
+		timer = al_create_timer(vel); //crea el timer pero NO empieza a correr
+		if (!timer) {
+			fprintf(stderr, "failed to create timer!\n");
+			error = false;
+		}
+		this->vel = vel;
+		cout << "setvel" << endl;
+		//startTimer();
+		al_register_event_source(event_queue, al_get_timer_event_source(timer));
+
+		al_start_timer(timer); //Recien aca EMPIEZA el timer
+	}
 }
 void scrolling::ToDisplay(basicLCD* lcd, std::string twit, int letras) {	//funcion que recibe un string y lo muestra en el display letra x letra
-	//char* cstr = new char[twit.length() + 1];						//
-	//std::strcpy(cstr, twit.c_str());
-
+	string s = completaString(twit);
+	cout << s << endl;
 	if (completo == 0) {		//si no esta completo
-		movimiento(lcd, twit, letras);
+		movimiento(lcd, s, letras);
 	}
 	else {			//si esta completo, todos los 16 caracters mostrados en el display
-		movimFinal(lcd, twit);
+		movimFinal(lcd, s);
 	}
 
 }
 
-/*void config::strings(basicLCD* lcd, std::string twit, int letras) {
-	cola = modulo(twit.length() + 1);
-	std::cout << cola << std::endl;
 
-	if (cola == 1) {
-		ToDisplay(lcd, twit, letras);
+
+string scrolling::completaString(string twit) {
+	std::string s = "               ";		//string completador
+	int indice = 0;
+	if (twit.length() + 1 < 16) {
+		indice = 16 - twit.length();
+		s = s.substr(0, indice);
+		return(twit + s);
 	}
-	else {
-		std::cout << "hola" << std::endl;
-		std:string s=divisor(twit);
-		ToDisplay(lcd,s, letras);
-	}
-}*/
-
-//std::string config::divisor(std::string twit) {
-//	int j = cola - completo;
-//	for (int i = cola; i > j; limite.column + 15, limite.row + 15,j+1) {
-//
-//	}
-//	std::cout << limite.column << std::endl;
-//	return(twit.substr(limite.column, limite.row));
-//}
-
-
-int scrolling::modulo(int len) {
-	if ((len % 16) == 0) {
-		return (len / 16);
-	}
-	else {
-		return((len / 16) + 1);
+	else
+	{
+		return(twit);
 	}
 }
+
 
 
 void scrolling::setcompleto(int completo) {
@@ -148,4 +233,3 @@ void scrolling::setcompleto(int completo) {
 int scrolling::getcompleto(void) {
 	return completo;
 }
-
