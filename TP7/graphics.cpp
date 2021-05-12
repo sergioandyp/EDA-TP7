@@ -2,6 +2,8 @@
 #include <allegro5/allegro.h>
 #include <allegro5/allegro_primitives.h>
 #include <allegro5/allegro_image.h>
+#include <allegro5/allegro_font.h>
+#include <allegro5/allegro_ttf.h>
 #include "imGui/imgui.h"
 #include "imGui/imgui_impl_allegro5.h"
 #include "Config.h"
@@ -20,10 +22,34 @@ int Graphics::initGraphics(void) {
         cout << "Error al inicializar allegro\n";
         return 0;
     }
+
     if (!al_init_image_addon()) {
         cout << "Error al inicializar image_addon\n";
         return 0;
     }
+
+    if (!al_init_primitives_addon()) {
+        cout << "Error al inicializar primitives_addon\n";
+        al_shutdown_image_addon();
+        return 0;
+    }
+
+    if (!al_init_font_addon()) {
+        cout << "Error al inicializar font_addon\n";
+        al_shutdown_image_addon();
+        al_shutdown_primitives_addon();
+        return 0;
+    }
+
+    if (!al_init_ttf_addon()) {
+        cout << "Error al inicializar ttf_addon\n";
+        al_shutdown_image_addon();
+        al_shutdown_primitives_addon();
+        al_shutdown_font_addon();
+        return 0;
+    }
+
+
     al_install_keyboard();
     al_install_mouse();
     if (!al_init_primitives_addon()) { return 0; }
@@ -50,6 +76,12 @@ void Graphics::destroyGraphics(void) {
     ImGui_ImplAllegro5_Shutdown();
     ImGui::DestroyContext();
     al_destroy_display(display);
+    al_destroy_event_queue(eventQueue);
+
+    al_shutdown_image_addon();
+    al_shutdown_primitives_addon();
+    al_shutdown_font_addon();
+    al_shutdown_ttf_addon();
 }
 
 void Graphics::drawInit(Config& config, bool& doExit) {
