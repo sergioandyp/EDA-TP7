@@ -103,9 +103,7 @@ bool scrolling::timerDisplay(basicLCD* lcd, string twit,string  usuario,float ve
 	 if (true==scrollingOK()) {	
 		 ALLEGRO_EVENT ev;
 		 if (twitMostrado ==true) {
-			cout << twitMostrado << endl;
 			 return true;
-			 cout << "timerDisplay" << endl;
 		 }
 		 if (al_get_next_event(event_queue, &ev)) //Toma un evento de la cola, .
 		 {
@@ -226,9 +224,9 @@ string scrolling::completaString(string twit) {
 
 
 
-void scrolling::setcompleto(int completo) {
-	this->completo = completo;
+void scrolling::settwitMostrado(bool completo) {
+	this->twitMostrado = completo;
 }
-int scrolling::getcompleto(void) {
-	return completo;
+bool scrolling::gettwitMostrado(void) {
+	return twitMostrado;
 }

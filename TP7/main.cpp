@@ -44,9 +44,9 @@ int main(void) {
     TwitterAPI api;
     vector<Tweet> tweets;
     Graphics gui;
-    scrolling scroll;
+    scrolling scroll[3];
     int tweetIndex = 0;
-    bool nexttwit;
+    bool nexttwit = false;
 
     vector<basicLCD*> lcds(3, nullptr);     // Vector con los lcds
 
@@ -131,29 +131,26 @@ int main(void) {
         }
 
         if (downloadState == DISPLAY_DOWNLOAD) {
-            for (int i = 0; i < lcds.size(); i++) {
-                basicLCD* lcd = lcds[i];
-                if (lcd != nullptr) {
-                                     
-                    // EJEMPLO PARA VER SI IMPRIME ALGO, CAMBIAR
-    
-                    nexttwit=scroll.timerDisplay(lcd,tweets[tweetIndex].getText(),(tweets[tweetIndex].getUser()),1-(conf.getSpeed()/10.0) );
-                    if(nexttwit==true){
-                        tweetIndex++;
-                     nexttwiter=0;
-                    }
+            if (tweetIndex < tweets.size()) {
+                for (int i = 0; i < lcds.size(); i++) {
+                    basicLCD* lcd = lcds[i];
+                    if (lcd != nullptr) {
 
-                    if (tweetIndex >= tweets.size()) {
-                        tweetIndex = tweets.size() -  1;
-                        downloadState = END_DISPLAY;
-                    }
+                        nexttwit += scroll[i].timerDisplay(lcd, tweets[tweetIndex].getText(), (tweets[tweetIndex].getUser()), 1.0 - (conf.getSpeed() / 10.0));
 
+                    }
+                }
+
+                if (nexttwit == true) {
+                    tweetIndex++;
+                    nexttwit = 0;
+                    scroll[i].settwitMostrado(false);
                 }
             }
-        }
+            else {
+                printToLCDs(lcds, "ULTIMO TUIT");
+            }
 
-        if (downloadState == END_DISPLAY) {
-            printToLCDs(lcds, "ULTIMO TWEET");
         }
 
         }
@@ -177,6 +174,7 @@ void deleteLCDs(vector<basicLCD*> lcds) {
 void printToLCDs(vector<basicLCD*> lcds, string text) {
     for (basicLCD* lcd : lcds) {
            if (lcd != nullptr) {
+               lcd->lcdClear();
                *lcd << text.c_str();
            }
     }
