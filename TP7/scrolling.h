@@ -24,7 +24,7 @@ public:
 	scrolling();
 	~scrolling();
 	bool scrollingOK(void);
-	bool timerDisplay(basicLCD* lcd, string twit, float velocidad);
+	bool timerDisplay(basicLCD* lcd, string twit, string  usuario, float velocidad);
 
 private:
 	int contador;
@@ -45,6 +45,7 @@ private:
 	void movimiento(basicLCD* lcd, std::string twit, int letra);
 	void movimFinal(basicLCD* lcd, std::string twit);
 	bool initallegro(void);
+	void titulo(basicLCD* lcd, string usuario);
 
 
 };

@@ -151,6 +151,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="basicLCD.cpp" />
+    <ClCompile Include="claselcd2.cpp" />
     <ClCompile Include="Config.cpp" />
     <ClCompile Include="displayTest.cpp" />
     <ClCompile Include="graphics.cpp" />
@@ -170,6 +171,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="basicLCD.h" />
+    <ClInclude Include="claselcd2.h" />
     <ClInclude Include="Config.h" />
     <ClInclude Include="graphics.h" />
     <ClInclude Include="imGui\imconfig.h" />

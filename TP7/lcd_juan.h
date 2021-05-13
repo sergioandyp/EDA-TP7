@@ -15,11 +15,11 @@
 
 extern ALLEGRO_EVENT_QUEUE* event_queue;
 
-enum ERRORES		// Distintos tipos de errores
-{
-	NO_ERROR = -2,
-	ERROR = -1
-};
+//enum ERRORES		// Distintos tipos de errores
+//{
+//	NO_ERROR = -2,
+//	ERROR = -1
+//};
 
 class lcd : public basicLCD
 {

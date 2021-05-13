@@ -78,30 +78,39 @@ void scrolling::movechar(basicLCD* lcd, int cursor, const unsigned char c) {
 //	}
 //}
 
-bool scrolling::timerDisplay(basicLCD* lcd, string twit, float velocidad) {
-	setVel(velocidad);
-	if (true == scrollingOK()) {
-		ALLEGRO_EVENT ev;
-		if (twitMostrado == true) {
-			return true;
-			cout << "timerDisplay" << endl;
-		}
-		if (al_get_next_event(event_queue, &ev)) //Toma un evento de la cola, .
-		{
-			if (ev.type == ALLEGRO_EVENT_TIMER) {
-				contador++;
-				ToDisplay(lcd, twit, contador);
-				return false;
-			}
-			else {
-				return false;
-			}
-		}
+void scrolling::titulo(basicLCD* lcd, string usuario) {
+	cursor.column = 0;
+	cursor.row = 0;
+	string str = usuario.substr(0, 15);
+	char* cstr = new char[str.length() + 1];
+	(*lcd) << (const unsigned char*)cstr;
 
-	}
-	else {
-		return false;
-	}
+}
+bool scrolling::timerDisplay(basicLCD* lcd, string twit,string  usuario,float velocidad) {
+	titulo(lcd, usuario);
+	setVel(velocidad);
+	 if (true==scrollingOK()) {	
+		 ALLEGRO_EVENT ev;
+		 if (twitMostrado ==true) {
+			 return true;
+			 cout << "timerDisplay" << endl;
+		 }
+		 if (al_get_next_event(event_queue, &ev)) //Toma un evento de la cola, .
+		 {
+			 if (ev.type == ALLEGRO_EVENT_TIMER){
+				 contador++;
+				 ToDisplay(lcd,twit, contador);
+				 return false;
+			 }
+			 else {
+				 return false;
+			 }
+		 }
+
+	 }
+	 else {
+		 return false;
+	 }
 }
 
 

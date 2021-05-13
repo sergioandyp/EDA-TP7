@@ -126,6 +126,10 @@ void Graphics::drawInit(Config& config, bool& doExit) {
     if (tempTweetCount < 1) {
         tempTweetCount = 1;
     }
+
+    if (ImGui::Button("Aceptar", ImVec2(ImGui::GetWindowSize().x * 0.3, ImGui::GetWindowSize().y * 0.3))) {
+        aceptar = true;
+    }
     config.setTweetCount(tempTweetCount);
 
     al_flip_display();
@@ -200,11 +204,69 @@ void Graphics::drawConfig(Config& config, bool& doExit){
     ImGui::Render();
     ImGui_ImplAllegro5_RenderDrawData(ImGui::GetDrawData());
 
-    ////Experimento
-    //ImGui_ImplAllegro5_NewFrame();
-    //ImGui::NewFrame();
 }
 
+bool Graphics::buttonAnterior() {
+    if (this->anterior) {
+        this->anterior = false;
+        return true;
+    }
+    else {
+        return false;
+    }
+}
+
+bool Graphics::buttonSiguiente() {
+    if (this->siguiente) {
+        this->siguiente = false;
+        return true;
+    }
+    else {
+        return false;
+    }
+}
+
+bool Graphics::buttonRepetir() {
+    if (this->repetir) {
+        this->repetir = false;
+        return true;
+    }
+    else {
+        return false;
+    }
+}
+
+int Graphics::buttonLCD() {
+
+    int numLcd = 0;
+
+    if (this->lcd1) {
+        numLcd = 1;
+        this->lcd1 = false;
+    }
+    if (this->lcd2) {
+        numLcd = 2;
+        this->lcd2 = false;
+    }
+    if (this->lcd3) {
+        numLcd = 3;
+        this->lcd3 = false;
+    }
+
+    return numLcd;
+}
+
+bool Graphics::buttonAceptar() {
+
+    if (this->aceptar) {
+        this->aceptar = false;
+        return true;
+    }
+    else {
+        return false;
+    }
+
+}
 
 //ALLEGRO_DISPLAY* display;
 //ALLEGRO_EVENT_QUEUE* event_queue;

@@ -31,6 +31,21 @@ public:
 	//Permite ingresar el nombre de usiario de Twitter y la cantidad de Twets
 	void drawInit(Config& config, bool& doExit);
 
+	//Devuelve true cuando se tocó el botón de "anterior"
+	bool buttonAnterior();
+	
+	//Devuelve true cuando se tocó el botón de "siguiente"
+	bool buttonSiguiente();
+
+	//Devuelve true cuando se tocó el botón de "repetir"
+	bool buttonRepetir();
+
+	//Si no se tocó ningún botón devuelve 0. Si se toca uno de los botones (1,2,3) devuelve 1,2,3.
+	int buttonLCD();
+
+	//Si se apretó el botón aceptar devuelve un true
+	bool buttonAceptar();
+
 private:
 	ALLEGRO_DISPLAY* display;
 	ALLEGRO_EVENT_QUEUE* eventQueue;
@@ -42,6 +57,8 @@ private:
 	bool siguiente;
 	bool repetir;
 	bool anterior;
+	bool aceptar;
+	bool aceptar;
 };
 
 /*
