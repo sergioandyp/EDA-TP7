@@ -108,6 +108,7 @@ bool scrolling::timerDisplay(basicLCD* lcd, string twit,string  usuario,float ve
 		 }
 		 if (al_get_next_event(event_queue, &ev)) //Toma un evento de la cola, .
 		 {
+			 // AL PARECER NUNCA ESTA ENTRANDO ACA
 			 if (ev.type == ALLEGRO_EVENT_TIMER){
 				 contador++;
 				 ToDisplay(lcd,twit, contador);

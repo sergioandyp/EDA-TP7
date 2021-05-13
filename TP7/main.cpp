@@ -63,16 +63,16 @@ int main(void) {
 
         gui.drawConfig(conf, doExit);
 
-        int i = gui.buttonLCD();
-        switch (i) {
+        int lcdBtn = gui.buttonLCD();
+        switch (lcdBtn) {
         case 1:
-            toggleLCD<claselcd2>(lcds[i - 1]);      // GuadaLCD
+            toggleLCD<claselcd2>(lcds[lcdBtn - 1]);
                 break;
         case 2:
-            toggleLCD<SergioLCD>(lcds[i - 1]);      // JuanLCD
+            toggleLCD<SergioLCD>(lcds[lcdBtn - 1]);      // JuanLCD
                 break;
         case 3:
-            toggleLCD<SergioLCD>(lcds[i - 1]);
+            toggleLCD<SergioLCD>(lcds[lcdBtn - 1]);
             break;
         default:
             break;
@@ -129,29 +129,50 @@ int main(void) {
 
         if (downloadState == DISPLAY_DOWNLOAD) {
 
+            if (gui.buttonAnterior()) {
+                if (tweetIndex > 0) {
+                    tweetIndex--;
+                    // AVISAR QUE SE CAMBIO DE TWEET
+                }
+            }
+            if (gui.buttonRepetir()) {
+                // HACER ACCION DE REPETIR
+            }
+            if (gui.buttonSiguiente()) {
+                tweetIndex++;
+                // AVISAR QUE SE CAMBIO DE TWEET
+            }
+
             if (tweetIndex < tweets.size()) {
                 Tweet tweet = tweets[tweetIndex];
+                nexttwit = false;
                 for (int i = 0; i < lcds.size(); i++) {
                     basicLCD* lcd = lcds[i];
                     if (lcd != nullptr) {
 
                         lcd->lcdClear();
-                        *lcd << tweets[tweetIndex].getDate().c_str();
-                        nexttwit += scroll[i].timerDisplay(lcd, tweets[tweetIndex].getText(), (tweets[tweetIndex].getUser()),conf.getSpeed());
-
+                        //*lcd << tweets[tweetIndex].getDate().c_str();
+                        nexttwit = scroll[i].timerDisplay(lcd, tweets[tweetIndex].getText(), tweets[tweetIndex].getDate(),conf.getSpeed());
                     }
                 }
 
                 if (nexttwit == true) {
                     tweetIndex++;
-                    nexttwit = 0;
-                    scroll[i].settwitMostrado(false);
+                    nexttwit = false;
+                    for (int i = 0; i < 3; i++) {
+                        scroll[i].settwitMostrado(false);
+                    }
                 }
             }
             else {
                 printToLCDs(lcds, "ULTIMO TUIT");
             }
 
+        }
+        else {
+            gui.buttonAnterior();       // Leemos los botones pero los ignoramos
+            gui.buttonRepetir();        // Esto es para limpiarlos y no tener valores
+            gui.buttonSiguiente();      // antiguos.
         }
 
         }
