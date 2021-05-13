@@ -24,21 +24,24 @@ public:
 	scrolling();
 	~scrolling();
 	bool scrollingOK(void);
-	bool timerDisplay(basicLCD* lcd, string twit, string  usuario, float velocidad);
+	bool timerDisplay(basicLCD* lcd, string twit, string  usuario, int velocidad);
+	void titulo(basicLCD* lcd, string usuario);
 
 private:
-	int contador;
 	int usuar;
+	int contador;
 	bool completo;
-	float vel;
+	int vel;
 	int posicion;
 	char* cstr;
 	bool error;
 	bool twitMostrado;
 	ALLEGRO_TIMER* timer = NULL;
+	ALLEGRO_EVENT ev;
 	ALLEGRO_EVENT_QUEUE* event_queue;
 	cursorPosition cursor;
-	void setVel(float vel);
+	void setVel(int vel);
+	float velelegida(int vel);
 	string  completaString(string twit);
 	void ToDisplay(basicLCD* lcd, std::string twit, int letras);
 	void printToDisplay(basicLCD* lcd, const unsigned char c);
@@ -46,10 +49,10 @@ private:
 	void movimiento(basicLCD* lcd, std::string twit, int letra);
 	void movimFinal(basicLCD* lcd, std::string twit);
 	bool initallegro(void);
-	void titulo(basicLCD* lcd, string usuario);
 
 
 };
+
 
 
 

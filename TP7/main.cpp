@@ -150,9 +150,9 @@ int main(void) {
                     basicLCD* lcd = lcds[i];
                     if (lcd != nullptr) {
 
-                        lcd->lcdClear();
+                       // lcd->lcdClear();
                         //*lcd << tweets[tweetIndex].getDate().c_str();
-                        nexttwit = scroll[i].timerDisplay(lcd, tweets[tweetIndex].getText(), tweets[tweetIndex].getDate(),conf.getSpeed());
+                        nexttwit = scroll[i].timerDisplay(lcd, tweets[tweetIndex].getText(), tweets[tweetIndex].getDate(),(int)conf.getSpeed());
                     }
                 }
 
