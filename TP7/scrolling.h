@@ -17,8 +17,8 @@ using namespace std;
 class scrolling
 {
 public:
-	void settwitmostrado(int completo);
-	int gettwitmostrado(void);
+	void settwitMostrado(bool completo);
+	bool gettwitMostrado(void);
 	float getVel(void);
 
 	scrolling();

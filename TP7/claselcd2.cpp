@@ -103,7 +103,6 @@ bool claselcd2::lcdClearToEOL() {
 	//"limpia" el display 
 	al_set_target_backbuffer(display);
 	al_clear_to_color(al_map_rgb(0, 0, 0));
-	al_flip_display();
 	//Imprime todo el texto
 	for (int i = 0; i < MAX_ROW; ++i) {
 		for (int c = 0; c < MAX_COLUMN; ++c) {
@@ -137,7 +136,6 @@ basicLCD& claselcd2:: operator<<(const char c) {
 	//"limpia" el display 
 	al_set_target_backbuffer(display);
 	al_clear_to_color(al_map_rgb(0, 0, 0));
-	al_flip_display();
 	//Imprime todo el texto
 	for (int i = 0; i < MAX_ROW; ++i) {
 		for (int c = 0; c < MAX_COLUMN; ++c) {
@@ -170,7 +168,6 @@ basicLCD& claselcd2:: operator<<(const char* c) {
 	//"limpia" el display 
 	al_set_target_backbuffer(display);
 	al_clear_to_color(al_map_rgb(0, 0, 0));
-	al_flip_display();
 	//Imprime todo el texto
 	for (int i = 0; i < MAX_ROW; ++i) {
 		for (int c = 0; c < MAX_COLUMN; ++c) {

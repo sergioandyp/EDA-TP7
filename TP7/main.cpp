@@ -17,7 +17,7 @@
 #define INIT_VEL 5
 using namespace std;
 
-enum DOWNLOAD_STATE { NOT_DOWNLOADING, DOWNLOADING, DOWNLOADED, DISPLAY_DOWNLOAD };
+enum DOWNLOAD_STATE { NOT_DOWNLOADING, DOWNLOADING, DOWNLOADED, DISPLAY_DOWNLOAD};
 
 void printToLCDs(vector<basicLCD*> lcds, string text);
 
@@ -45,6 +45,7 @@ int main(void) {
     vector<Tweet> tweets;
     Graphics gui;
     scrolling scroll;
+    int tweetIndex = 0;
     bool nexttwit;
 
     vector<basicLCD*> lcds(3, nullptr);     // Vector con los lcds
@@ -124,45 +125,42 @@ int main(void) {
             }
             else {
                 downloadState = DISPLAY_DOWNLOAD;
+                tweetIndex = 0;
             }
 
         }
 
         if (downloadState == DISPLAY_DOWNLOAD) {
-            for (basicLCD* lcd : lcds) {
+            for (int i = 0; i < lcds.size(); i++) {
+                basicLCD* lcd = lcds[i];
                 if (lcd != nullptr) {
                                      
                     // EJEMPLO PARA VER SI IMPRIME ALGO, CAMBIAR
     
-                    /nexttwit=scroll.timerDisplay(lcd,tweets[0].getText(),(tweets[].getDate)+(tweets[i].getUser()),conf.getSpeed());
-                     //if(nexttwiter==true){
-                     //i++;
-                     //nexttwiter=0;
-                    //}
+                    nexttwit=scroll.timerDisplay(lcd,tweets[tweetIndex].getText(),(tweets[tweetIndex].getUser()),1-(conf.getSpeed()/10.0) );
+                    if(nexttwit==true){
+                        tweetIndex++;
+                     nexttwiter=0;
+                    }
 
-                    *lcd << tweets[0].getText().c_str();
+                    if (tweetIndex >= tweets.size()) {
+                        tweetIndex = tweets.size() -  1;
+                        downloadState = END_DISPLAY;
+                    }
 
-
-                    // Aca imprimo a cada LCD        
-                    // timerDisplay(, twit, titulo, vel);       //devuelve si se ompleto el twit
                 }
             }
         }
 
-
-
-               ////Imprime en consola...
-               // for (auto& t : tweets)
-               // {
-               //     cout << t.getDate() << " - " << t.getUser() << " - " << t.getText() << endl;
-               //     std::cout << "-----------------------------------------" << std::endl;
-               // }
+        if (downloadState == END_DISPLAY) {
+            printToLCDs(lcds, "ULTIMO TWEET");
+        }
 
         }
 
-    gui.destroyGraphics();
-
     deleteLCDs(lcds);
+
+    gui.destroyGraphics();
 
 	return 0;
 }
