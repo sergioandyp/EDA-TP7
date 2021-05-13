@@ -2,6 +2,15 @@
 #define CLASELCD2_H
 
 #include "basicLCD.h"
+#include <string>
+#include <iostream>
+#include <allegro5/allegro.h>
+#include <allegro5/allegro_primitives.h>
+#include <allegro5/allegro_image.h>
+#include <allegro5/allegro_font.h>
+#include <allegro5/allegro_ttf.h>
+
+using namespace std;
 
 enum {ERROR_NONE = 0, ERROR_CURSOR};
 

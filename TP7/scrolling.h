@@ -28,6 +28,7 @@ public:
 
 private:
 	int contador;
+	int usuar;
 	bool completo;
 	float vel;
 	int posicion;

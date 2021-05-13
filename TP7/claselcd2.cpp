@@ -1,5 +1,8 @@
 #include "claselcd2.h"
 
+using namespace std;
+
+
 claselcd2::claselcd2() {
 
 	//Inicializo.
@@ -177,9 +180,9 @@ basicLCD& claselcd2:: operator<<(const char* c) {
 bool claselcd2::lcdMoveCursorUp() {
 
 	if (this->cursor.row == 0) {
-		ptrError->ErrorName = "Cursor Limit";
+		/*ptrError->ErrorName = "Cursor Limit";
 		ptrError->ErrorDescription = "Can't Move Cursor Up.";
-		ptrError->ErrorCode = ERROR_CURSOR;
+		ptrError->ErrorCode = ERROR_CURSOR;*/
 
 		return false;
 	}
@@ -192,9 +195,9 @@ bool claselcd2::lcdMoveCursorDown() {
 
 	if (this->cursor.row == (MAX_ROW - 1)) {
 
-		ptrError->ErrorName = "Cursor Limit";
+		/*ptrError->ErrorName = "Cursor Limit";
 		ptrError->ErrorDescription = "Can't Move Cursor Down.";
-		ptrError->ErrorCode = ERROR_CURSOR;
+		ptrError->ErrorCode = ERROR_CURSOR;*/
 
 		return false;
 	}
@@ -207,9 +210,9 @@ bool claselcd2::lcdMoveCursorRight() {
 
 	if ((this->cursor.column == (MAX_COLUMN - 1)) && (this->cursor.row == (MAX_ROW - 1))) {
 
-		ptrError->ErrorName = "Cursor Limit";
+		/*ptrError->ErrorName = "Cursor Limit";
 		ptrError->ErrorDescription = "Can't Move Cursor Right.";
-		ptrError->ErrorCode = ERROR_CURSOR;
+		ptrError->ErrorCode = ERROR_CURSOR;*/
 		return  false;
 	}
 	else if ((this->cursor.column == (MAX_COLUMN - 1)) && (this->cursor.row != (MAX_ROW - 1))) {
@@ -224,9 +227,9 @@ bool claselcd2::lcdMoveCursorRight() {
 bool claselcd2::lcdMoveCursorLeft() {
 
 	if ((this->cursor.column == 0) && (this->cursor.row == 0)) {
-		ptrError->ErrorName = "Cursor Limit";
+		/*ptrError->ErrorName = "Cursor Limit";
 		ptrError->ErrorDescription = "Can't Move Cursor Left.";
-		ptrError->ErrorCode = ERROR_CURSOR;
+		ptrError->ErrorCode = ERROR_CURSOR;*/
 		return  false;
 	}
 	else if ((this->cursor.column == 0) && (this->cursor.row != 0)) {
@@ -247,9 +250,9 @@ bool claselcd2::lcdSetCursorPosition(const cursorPosition pos) {
 		result = true;
 	}
 	else {
-		ptrError->ErrorName = "Cursor Limit";
+		/*ptrError->ErrorName = "Cursor Limit";
 		ptrError->ErrorDescription = "Can't Set Cursor Position.";
-		ptrError->ErrorCode = ERROR_CURSOR;
+		ptrError->ErrorCode = ERROR_CURSOR;*/
 		result = false;
 	}
 	return result;

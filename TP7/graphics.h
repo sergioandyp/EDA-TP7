@@ -19,6 +19,10 @@
 
 class Graphics {
 public:
+
+	//Constructor.
+	Graphics();
+
 	//Devuelve un 1 si todo salió bien. Ante algun problema devuelve un 0.
 	int initGraphics(void);
 
@@ -46,6 +50,9 @@ public:
 	//Si se apretó el botón aceptar devuelve un true
 	bool buttonAceptar();
 
+	//Si se apretó el botón cancelar (descarga) devuelve un true
+	bool buttonCancelar();
+
 private:
 	ALLEGRO_DISPLAY* display;
 	ALLEGRO_EVENT_QUEUE* eventQueue;
@@ -58,7 +65,7 @@ private:
 	bool repetir;
 	bool anterior;
 	bool aceptar;
-	bool aceptar;
+	bool cancelarDescarga;
 };
 
 /*

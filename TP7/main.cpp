@@ -9,11 +9,14 @@
 
 #include "TwitterAPI.h"
 #include "SergioLCD.h"
-#include "lcd_juan.h"
+#include "claselcd2.h"
+//#include "lcd_juan.h"
 
 #define MAX_VEL 10
 #define INIT_VEL 5
 using namespace std;
+
+enum DOWNLOAD_STATE { NOT_DOWNLOADING, DOWNLOADING, DOWNLOADED, DISPLAY_DOWNLOAD };
 
 void printToLCDs(vector<basicLCD*> lcds, string text);
 
@@ -22,9 +25,11 @@ template<typename LCDT> void toggleLCD(basicLCD* lcd) {     // Para agregaar o b
                 lcd = new LCDT;
         }
         else {
-            delete lcd[0];
+            delete lcd;
        }
 }
+
+void deleteLCDs(vector<basicLCD*> lcds);
 
 
 int main(void) {
@@ -36,6 +41,7 @@ int main(void) {
 
     //CONFIGURACIONES MIENTRAS MUESTRO
     bool doExit = false;
+    DOWNLOAD_STATE downloadState = NOT_DOWNLOADING;
     //int lcd = 0;
     
     Config conf;
@@ -73,33 +79,62 @@ int main(void) {
             break;
         }
 
+
         if (gui.buttonAceptar()) {
                 if (!api.startTweetsDownload(conf.getUser(), conf.getTweetCount())) {
+
+                    printToLCDs(lcds, "Error al descargar los tweets");
+
 
                     // Imprimir al display que hubo error
                     cout << "No se pudo obtener los tweets: " << endl;
                     cout << api.getError() << endl;
                     return 0;
                 }
-
-                while (api.runDownload()) {
-                    cout << api.runDownload() << endl;
-                    cout << "Descargando..." << endl;
-
-                    // Aca pantalla de de que está descargando y poder detenerlo
-
+                else {
+                    downloadState = DOWNLOADING;
                 }
-
-                if (!api.getTweets(tweets)) {
-
-                    // Imprimir al display que hubo error
-
-                    cout << "Error al obtener los tweets: " << endl << api.getError() << endl;
-                    return 0;
-                }
-            
                 
            }
+
+           
+        if (downloadState == DOWNLOADING) {
+            if (api.runDownload()) {
+                cout << "Descargando..." << endl;            
+            }
+            else {
+                downloadState = DOWNLOADED;
+            }
+        }
+
+        if (downloadState == DOWNLOADED) {
+
+            if (!api.getTweets(tweets)) {
+
+                // Imprimir al display que hubo error
+                printToLCDs(lcds, "Error al obtener los tweets");
+
+
+                cout << "Error al obtener los tweets: " << endl << api.getError() << endl;
+                return 0;
+            }
+
+        }
+
+        if (downloadState == DISPLAY_DOWNLOAD) {
+            for (basicLCD* lcd : lcds) {
+                if (lcd != nullptr) {
+                    
+                    // EJEMPLO PARA VER SI IMPRIME ALGO, CAMBIAR
+                    *lcd << tweets[0].getText().c_str();
+
+
+                    // Aca imprimo a cada LCD        
+                    // timerDisplay(, twit, titulo, vel);       //devuelve si se ompleto el twit
+                }
+            }
+        }
+
 
 
                ////Imprime en consola...
@@ -109,22 +144,21 @@ int main(void) {
                //     std::cout << "-----------------------------------------" << std::endl;
                // }
 
-
-
-                    //GRÁFICOS
-
-                    for (basicLCD* lcd : lcds) {
-                        if (lcd != nullptr) {
-                            // Aca imprimo a cada LCD        
-                            // timerDisplay(, twit, titulo, vel);       //devuelve si se ompleto el twit
-                        }
-                    }
-
-
         }
+
     gui.destroyGraphics();
 
+    deleteLCDs(lcds);
+
 	return 0;
+}
+
+void deleteLCDs(vector<basicLCD*> lcds) {
+    for (basicLCD* lcd : lcds) {
+           if (lcd != nullptr) {
+               delete lcd;
+           }
+    }
 }
 
 

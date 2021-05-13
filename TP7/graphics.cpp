@@ -17,6 +17,8 @@
 using namespace std;
 
 
+
+
 int Graphics::initGraphics(void) {
 
     if (!al_init()) {
@@ -53,7 +55,6 @@ int Graphics::initGraphics(void) {
 
     al_install_keyboard();
     al_install_mouse();
-    if (!al_init_primitives_addon()) { return 0; }
     display = al_create_display(DISPLAY_X, DISPLAY_Y);
     al_set_window_title(display, "Display Twitter");
 
@@ -130,6 +131,11 @@ void Graphics::drawInit(Config& config, bool& doExit) {
     if (ImGui::Button("Aceptar", ImVec2(ImGui::GetWindowSize().x * 0.3, ImGui::GetWindowSize().y * 0.3))) {
         aceptar = true;
     }
+    ImGui::SameLine();
+    if (ImGui::Button("Cancelar", ImVec2(ImGui::GetWindowSize().x * 0.3, ImGui::GetWindowSize().y * 0.3))) {
+        cancelarDescarga = true;
+    }
+
     config.setTweetCount(tempTweetCount);
 
     al_flip_display();
@@ -268,6 +274,17 @@ bool Graphics::buttonAceptar() {
 
 }
 
+bool Graphics::buttonCancelar() {
+
+    if (this->cancelarDescarga) {
+        this->cancelarDescarga = false;
+        return true;
+    }
+    else {
+        return false;
+    }
+
+}
 //ALLEGRO_DISPLAY* display;
 //ALLEGRO_EVENT_QUEUE* event_queue;
 

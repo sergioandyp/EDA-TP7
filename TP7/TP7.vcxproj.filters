@@ -63,9 +63,6 @@
     <ClCompile Include="scrolling.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="lcd_juan.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="claselcd2.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -114,9 +111,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="scrolling.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="lcd_juan.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="claselcd2.h">
