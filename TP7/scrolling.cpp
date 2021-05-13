@@ -196,7 +196,7 @@ float scrolling::getVel(void) {
 void scrolling::setVel(int vel) {
 	float velseleccionada = 0;
 	if (this->vel != vel) {
-		cout << "se crea timer" << endl;
+		//cout << "se crea timer" << endl;
 		velseleccionada = velelegida(vel);
 		al_destroy_timer(timer);
 		timer = al_create_timer(velseleccionada); //crea el timer pero NO empieza a correr
