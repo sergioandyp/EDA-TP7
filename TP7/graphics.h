@@ -33,7 +33,7 @@ public:
 	void drawConfig(Config& config, bool& doExit);
 
 	//Permite ingresar el nombre de usiario de Twitter y la cantidad de Twets
-	void drawInit(Config& config, bool& doExit);
+	//void drawInit(Config& config, bool& doExit);
 
 	//Devuelve true cuando se tocó el botón de "anterior"
 	bool buttonAnterior();

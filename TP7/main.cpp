@@ -11,6 +11,7 @@
 #include "SergioLCD.h"
 #include "claselcd2.h"
 //#include "lcd_juan.h"
+#include "scrolling.h"
 
 #define MAX_VEL 10
 #define INIT_VEL 5
@@ -48,6 +49,7 @@ int main(void) {
     TwitterAPI api;
     vector<Tweet> tweets;
     Graphics gui;
+    scrolling scroll;
 
     vector<basicLCD*> lcds(3, nullptr);     // Vector con los lcds
 
@@ -61,7 +63,8 @@ int main(void) {
     while (!doExit){
 
         //Dibujo las configuraiones dentro del display
-        gui.drawInit(conf, doExit);
+       // gui.drawInit(conf, doExit);
+
         gui.drawConfig(conf, doExit);
 
         int i = gui.buttonLCD();
@@ -89,7 +92,6 @@ int main(void) {
                     // Imprimir al display que hubo error
                     cout << "No se pudo obtener los tweets: " << endl;
                     cout << api.getError() << endl;
-                    return 0;
                 }
                 else {
                     downloadState = DOWNLOADING;
@@ -116,7 +118,6 @@ int main(void) {
 
 
                 cout << "Error al obtener los tweets: " << endl << api.getError() << endl;
-                return 0;
             }
 
         }
@@ -124,8 +125,9 @@ int main(void) {
         if (downloadState == DISPLAY_DOWNLOAD) {
             for (basicLCD* lcd : lcds) {
                 if (lcd != nullptr) {
-                    
+                                     
                     // EJEMPLO PARA VER SI IMPRIME ALGO, CAMBIAR
+                   //bool p = lcd2.timerDisplay(plcd,s5,usuario, 0.05);
                     *lcd << tweets[0].getText().c_str();
 
 

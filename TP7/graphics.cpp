@@ -17,7 +17,16 @@
 using namespace std;
 
 
+Graphics::Graphics() {
 
+    this->siguiente=false;
+    this->repetir = false;
+    this->anterior = false;
+    this->aceptar = false;
+    this->cancelarDescarga = false;
+   
+
+}
 
 int Graphics::initGraphics(void) {
 
@@ -86,15 +95,12 @@ void Graphics::destroyGraphics(void) {
     al_shutdown_ttf_addon();
 }
 
+/*
 void Graphics::drawInit(Config& config, bool& doExit) {
 
     int tempTweetCount = config.getTweetCount();
     char tempUser[100] = {};
     strcpy(tempUser, config.getUser().c_str());
-    //string tempStringUser=config.getUser();
-    //char* ptrTempUser[100] = tempStringUser.c_str();
-
-
     
 
     ImGui_ImplAllegro5_NewFrame();
@@ -135,7 +141,6 @@ void Graphics::drawInit(Config& config, bool& doExit) {
     if (ImGui::Button("Cancelar", ImVec2(ImGui::GetWindowSize().x * 0.3, ImGui::GetWindowSize().y * 0.3))) {
         cancelarDescarga = true;
     }
-
     config.setTweetCount(tempTweetCount);
 
     al_flip_display();
@@ -144,9 +149,17 @@ void Graphics::drawInit(Config& config, bool& doExit) {
     ImGui_ImplAllegro5_RenderDrawData(ImGui::GetDrawData());
 
 }
+*/
+
 
 void Graphics::drawConfig(Config& config, bool& doExit){
-
+    
+    
+    int tempTweetCount = config.getTweetCount();
+    char tempUser[100] = {};
+    strcpy(tempUser, config.getUser().c_str());
+    
+    
     ImGui_ImplAllegro5_NewFrame();
     ImGui::NewFrame();
 
@@ -155,7 +168,7 @@ void Graphics::drawConfig(Config& config, bool& doExit){
     window_flags |= ImGuiWindowFlags_NoCollapse;
     window_flags |= ImGuiWindowFlags_NoResize;
 
-    ImGui::SetNextWindowSize(ImVec2(DISPLAY_X,DISPLAY_X/4));
+    ImGui::SetNextWindowSize(ImVec2(DISPLAY_X, DISPLAY_Y));
     ImGui::SetNextWindowPos(ImVec2(0, 0));
 
     ALLEGRO_EVENT ev;
@@ -167,8 +180,27 @@ void Graphics::drawConfig(Config& config, bool& doExit){
             doExit = true;
     }
 
+
+    ImGui::Begin("Ingresar Datos", NULL, window_flags);
+
+    ImGui::InputText("Nombre de Usuario", tempUser, 100);
+    config.setUser(tempUser);
+
+    ImGui::InputInt("Cantidad de tweets", &tempTweetCount, 1, 10);
+    if (tempTweetCount < 1) {
+        tempTweetCount = 1;
+    }
+
+    if (ImGui::Button("Aceptar", ImVec2(ImGui::GetWindowSize().x * 0.3, ImGui::GetWindowSize().y * 0.3))) {
+        aceptar = true;
+    }
+    ImGui::SameLine();
+    if (ImGui::Button("Cancelar", ImVec2(ImGui::GetWindowSize().x * 0.3, ImGui::GetWindowSize().y * 0.3))) {
+        cancelarDescarga = true;
+    }
+    config.setTweetCount(tempTweetCount);
+
     //Ventana de configuraciones
-    ImGui::Begin("Configuraciones",NULL, window_flags);
     
     //Para variar la velocidad (número float que va desde 0 hasta MAX_VEL)
     float speed = config.getSpeed();
@@ -189,8 +221,6 @@ void Graphics::drawConfig(Config& config, bool& doExit){
     if (ImGui::Button("3", ImVec2(ImGui::GetWindowSize().x*0.3, ImGui::GetWindowSize().y*0.15))){
         lcd3 = true;
     }
-
- 
 
     if (ImGui::Button("< Anterior", ImVec2(ImGui::GetWindowSize().x * 0.3, ImGui::GetWindowSize().y * 0.2))) {
         anterior= true;
