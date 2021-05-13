@@ -41,6 +41,7 @@ claselcd2::claselcd2() {
 
 	al_set_window_title(display, "Display 2");
 	al_start_timer(timer);
+	al_set_target_backbuffer(display);
 	al_clear_to_color(al_map_rgb(0, 0, 0));
 	al_flip_display();
 	this->error = false;
@@ -52,8 +53,8 @@ claselcd2::~claselcd2() {
 	al_destroy_display(this->display);
 	al_destroy_font(this->font);
 	al_destroy_timer(this->timer);
-	al_shutdown_font_addon();
-	al_shutdown_ttf_addon();
+	/*al_shutdown_font_addon();
+	al_shutdown_ttf_addon();*/
 	delete ptrError;
 
 
@@ -80,6 +81,7 @@ bool claselcd2::lcdClear() {
 	this->cursor.row = 0;
 
 	//"limpia" el display 
+	al_set_target_backbuffer(display);
 	al_clear_to_color(al_map_rgb(0, 0, 0));
 	al_flip_display();
 
@@ -99,6 +101,7 @@ bool claselcd2::lcdClearToEOL() {
 	};
 
 	//"limpia" el display 
+	al_set_target_backbuffer(display);
 	al_clear_to_color(al_map_rgb(0, 0, 0));
 	al_flip_display();
 	//Imprime todo el texto
@@ -132,6 +135,7 @@ basicLCD& claselcd2:: operator<<(const char c) {
 	this->lcdMoveCursorRight();
 
 	//"limpia" el display 
+	al_set_target_backbuffer(display);
 	al_clear_to_color(al_map_rgb(0, 0, 0));
 	al_flip_display();
 	//Imprime todo el texto
@@ -164,6 +168,7 @@ basicLCD& claselcd2:: operator<<(const char* c) {
 
 	cout << string(ptrText) << endl;
 	//"limpia" el display 
+	al_set_target_backbuffer(display);
 	al_clear_to_color(al_map_rgb(0, 0, 0));
 	al_flip_display();
 	//Imprime todo el texto

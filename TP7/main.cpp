@@ -21,12 +21,13 @@ enum DOWNLOAD_STATE { NOT_DOWNLOADING, DOWNLOADING, DOWNLOADED, DISPLAY_DOWNLOAD
 
 void printToLCDs(vector<basicLCD*> lcds, string text);
 
-template<typename LCDT> void toggleLCD(basicLCD* lcd) {     // Para agregaar o borrar LCDS
+template<typename LCDT> void toggleLCD(basicLCD*& lcd) {     // Para agregaar o borrar LCDS
         if (lcd == nullptr) {
                 lcd = new LCDT;
         }
         else {
             delete lcd;
+            lcd = nullptr;
        }
 }
 
@@ -35,21 +36,16 @@ void deleteLCDs(vector<basicLCD*> lcds);
 
 int main(void) {
 
-
-    //CONFIGURACIONES PARA EMPEZAR
-    //char usuario[10] = "";
-    //int cantidadTweets=0;
-
     //CONFIGURACIONES MIENTRAS MUESTRO
     bool doExit = false;
     DOWNLOAD_STATE downloadState = NOT_DOWNLOADING;
-    //int lcd = 0;
     
     Config conf;
     TwitterAPI api;
     vector<Tweet> tweets;
     Graphics gui;
     scrolling scroll;
+    bool nexttwit;
 
     vector<basicLCD*> lcds(3, nullptr);     // Vector con los lcds
 
@@ -63,14 +59,13 @@ int main(void) {
     while (!doExit){
 
         //Dibujo las configuraiones dentro del display
-       // gui.drawInit(conf, doExit);
 
         gui.drawConfig(conf, doExit);
 
         int i = gui.buttonLCD();
         switch (i) {
         case 1:
-            toggleLCD<SergioLCD>(lcds[i - 1]);      // GuadaLCD
+            toggleLCD<claselcd2>(lcds[i - 1]);      // GuadaLCD
                 break;
         case 2:
             toggleLCD<SergioLCD>(lcds[i - 1]);      // JuanLCD
@@ -102,7 +97,13 @@ int main(void) {
            
         if (downloadState == DOWNLOADING) {
             if (api.runDownload()) {
-                cout << "Descargando..." << endl;            
+                cout << "Descargando..." << endl;    
+                
+                if(gui.buttonCancelar()) {
+                    api.stopDownload();
+                    downloadState = NOT_DOWNLOADING;
+                }
+
             }
             else {
                 downloadState = DOWNLOADED;
@@ -118,6 +119,11 @@ int main(void) {
 
 
                 cout << "Error al obtener los tweets: " << endl << api.getError() << endl;
+
+                downloadState = NOT_DOWNLOADING;
+            }
+            else {
+                downloadState = DISPLAY_DOWNLOAD;
             }
 
         }
@@ -127,7 +133,13 @@ int main(void) {
                 if (lcd != nullptr) {
                                      
                     // EJEMPLO PARA VER SI IMPRIME ALGO, CAMBIAR
-                   //bool p = lcd2.timerDisplay(plcd,s5,usuario, 0.05);
+    
+                    /nexttwit=scroll.timerDisplay(lcd,tweets[0].getText(),(tweets[].getDate)+(tweets[i].getUser()),conf.getSpeed());
+                     //if(nexttwiter==true){
+                     //i++;
+                     //nexttwiter=0;
+                    //}
+
                     *lcd << tweets[0].getText().c_str();
 
 

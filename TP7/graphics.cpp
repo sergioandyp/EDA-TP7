@@ -95,62 +95,6 @@ void Graphics::destroyGraphics(void) {
     al_shutdown_ttf_addon();
 }
 
-/*
-void Graphics::drawInit(Config& config, bool& doExit) {
-
-    int tempTweetCount = config.getTweetCount();
-    char tempUser[100] = {};
-    strcpy(tempUser, config.getUser().c_str());
-    
-
-    ImGui_ImplAllegro5_NewFrame();
-    ImGui::NewFrame();
-
-    ImGuiWindowFlags window_flags = 0; 
-    window_flags |= ImGuiWindowFlags_NoMove;
-    window_flags |= ImGuiWindowFlags_NoCollapse;
-    window_flags |= ImGuiWindowFlags_NoResize;
-
-    ImGui::SetNextWindowSize(ImVec2(DISPLAY_X, DISPLAY_X / 4));
-    ImGui::SetNextWindowPos(ImVec2(0, 0));
-
-    ALLEGRO_EVENT ev;
-
-    while (al_get_next_event(eventQueue, &ev))
-    {
-        ImGui_ImplAllegro5_ProcessEvent(&ev);
-        if (ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE)
-            doExit = true;
-    }
-
-
-    ImGui::Begin("Ingresar Datos", NULL, window_flags);
-
-    ImGui::InputText("Nombre de Usuario", tempUser, 100);
-    config.setUser(tempUser);
- 
-    ImGui::InputInt("Cantidad de tweets",&tempTweetCount, 1, 10);
-    if (tempTweetCount < 1) {
-        tempTweetCount = 1;
-    }
-
-    if (ImGui::Button("Aceptar", ImVec2(ImGui::GetWindowSize().x * 0.3, ImGui::GetWindowSize().y * 0.3))) {
-        aceptar = true;
-    }
-    ImGui::SameLine();
-    if (ImGui::Button("Cancelar", ImVec2(ImGui::GetWindowSize().x * 0.3, ImGui::GetWindowSize().y * 0.3))) {
-        cancelarDescarga = true;
-    }
-    config.setTweetCount(tempTweetCount);
-
-    al_flip_display();
-    ImGui::End();
-    ImGui::Render();
-    ImGui_ImplAllegro5_RenderDrawData(ImGui::GetDrawData());
-
-}
-*/
-
 
 void Graphics::drawConfig(Config& config, bool& doExit){
     
@@ -170,6 +114,7 @@ void Graphics::drawConfig(Config& config, bool& doExit){
 
     ImGui::SetNextWindowSize(ImVec2(DISPLAY_X, DISPLAY_Y));
     ImGui::SetNextWindowPos(ImVec2(0, 0));
+    al_set_target_backbuffer(display);
 
     ALLEGRO_EVENT ev;
 
@@ -315,43 +260,3 @@ bool Graphics::buttonCancelar() {
     }
 
 }
-//ALLEGRO_DISPLAY* display;
-//ALLEGRO_EVENT_QUEUE* event_queue;
-
-/*
-ALLEGRO_FONT* font;;
-
-int init_allegro() {            // incio allegro
-    if (!al_init()) {
-        cout << "failed to initialize allegro!!" << endl;
-        return -1;
-    }
-    else if (!al_init_image_addon()) {
-        cout << "failed to init image addon!" << endl;
-        return -1;
-    }
-
-    event_queue = al_create_event_queue();
-    if (!event_queue) {
-        cout << "failed to load event queue!" << endl;
-        al_destroy_display(display);
-
-        return -1;
-    }
-    else if (!al_install_keyboard()) {
-        cout << "failed to install keyboard!" << endl;
-
-
-        al_destroy_event_queue(event_queue);
-        return -1;
-    }
-    al_register_event_source(event_queue, al_get_keyboard_event_source());
-
-    al_init_primitives_addon();
-    al_init_image_addon();  // initialize the font addon
-    al_init_font_addon();
-    al_init_ttf_addon(); // initialize the ttf (True Type Font) addon
-
-    return NO_ERROR;
-}
-*/

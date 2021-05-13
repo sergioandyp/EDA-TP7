@@ -15,7 +15,7 @@
 #define MAX_VEL 10
 #define INIT_VEL 5
 #define DISPLAY_X	500
-#define DISPLAY_Y	500
+#define DISPLAY_Y	400
 
 class Graphics {
 public:
@@ -67,18 +67,5 @@ private:
 	bool aceptar;
 	bool cancelarDescarga;
 };
-
-/*
-extern ALLEGRO_EVENT_QUEUE* event_queue;
-
-enum ERRORES		// Distintos tipos de errores
-{
-	NO_ERROR = -2,
-	ERROR = -1
-};
-
- //Funcion que le da la bienvenida al usuario por allegro
-int init_allegro();
-*/
 
 #endif //GRAPHICS_H
