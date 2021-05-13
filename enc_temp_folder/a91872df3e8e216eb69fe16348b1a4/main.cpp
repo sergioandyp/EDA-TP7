@@ -57,7 +57,7 @@ int main(void) {
     }
 
 
-    while (!doExit) {
+    while (!doExit){
 
         //Dibujo las configuraiones dentro del display
 
@@ -118,6 +118,9 @@ int main(void) {
                 // Imprimir al display que hubo error
                 printToLCDs(lcds, "Error al obtener los tweets");
 
+
+                cout << "Error al obtener los tweets: " << endl << api.getError() << endl;
+
                 downloadState = NOT_DOWNLOADING;
             }
             else {
@@ -128,7 +131,6 @@ int main(void) {
         }
 
         if (downloadState == DISPLAY_DOWNLOAD) {
-
             if (tweetIndex < tweets.size()) {
                 Tweet tweet = tweets[tweetIndex];
                 for (int i = 0; i < lcds.size(); i++) {

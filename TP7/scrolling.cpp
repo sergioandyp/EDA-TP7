@@ -82,6 +82,7 @@ void scrolling::movechar(basicLCD* lcd, int cursor, const unsigned char c) {
 void scrolling::titulo(basicLCD* lcd, string usuario) {
 	cursor.column = 0;
 	cursor.row = 0;
+	lcd->lcdSetCursorPosition(cursor);
 	string str = usuario.substr(0, 15);
 	char* cstr = new char[str.length() + 1];
 	(*lcd) << cstr;
@@ -115,6 +116,9 @@ bool scrolling::timerDisplay(basicLCD* lcd, string twit,string  usuario,float ve
 			 else {
 				 return false;
 			 }
+		 }
+		 else {
+			 return false;
 		 }
 
 	 }
@@ -177,7 +181,7 @@ float scrolling::getVel(void) {
 	return this->vel;
 }
 void scrolling::setVel(float vel) {
-	if (this->vel != vel) {
+	if (this->vel >= vel+0.01 && this->vel <= vel-0.01) {
 
 		al_destroy_timer(timer);
 		cout << "setvel" << endl;
