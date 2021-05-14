@@ -15,11 +15,14 @@
 
 #define MAX_VEL 10
 #define INIT_VEL 5
+
+#define LCD_COUNT   3
+
 using namespace std;
 
 enum DOWNLOAD_STATE { NOT_DOWNLOADING, DOWNLOADING, DOWNLOADED, DISPLAY_DOWNLOAD};
 
-void printToLCDs(vector<basicLCD*> lcds, string text);
+void printToLCDs(vector<basicLCD*>& lcds, string text);
 
 template<typename LCDT> void toggleLCD(basicLCD*& lcd) {     // Para agregaar o borrar LCDS
         if (lcd == nullptr) {
@@ -31,7 +34,11 @@ template<typename LCDT> void toggleLCD(basicLCD*& lcd) {     // Para agregaar o 
        }
 }
 
-void deleteLCDs(vector<basicLCD*> lcds);
+void clearLCDs(vector<basicLCD*>& lcds);
+
+void deleteLCDs(vector<basicLCD*>& lcds);
+
+void resetScroll(scrolling*& scroll, unsigned int size);
 
 
 int main(void) {
@@ -44,11 +51,11 @@ int main(void) {
     TwitterAPI api;
     vector<Tweet> tweets;
     Graphics gui;
-    scrolling scroll[3];
+    scrolling* scroll = new scrolling[LCD_COUNT];
     int tweetIndex = 0;
     bool nexttwit = false;
 
-    vector<basicLCD*> lcds(3, nullptr);     // Vector con los lcds
+    vector<basicLCD*> lcds(LCD_COUNT, nullptr);     // Vector con los lcds
 
     //Inicializo la parte gráfica: display de allegro, imGui, cola de eventos de allegro... 
     if (!gui.initGraphics()) {
@@ -80,14 +87,13 @@ int main(void) {
 
 
         if (gui.buttonAceptar()) {
+
+                printToLCDs(lcds, conf.getUser());
+
+
                 if (!api.startTweetsDownload(conf.getUser(), conf.getTweetCount())) {
 
                     printToLCDs(lcds, "Error al descargar los tweets");
-
-
-                    // Imprimir al display que hubo error
-                    cout << "No se pudo obtener los tweets: " << endl;
-                    cout << api.getError() << endl;
                 }
                 else {
                     downloadState = DOWNLOADING;
@@ -98,7 +104,6 @@ int main(void) {
            
         if (downloadState == DOWNLOADING) {
             if (api.runDownload()) {
-                cout << "Descargando..." << endl;    
                 
                 if(gui.buttonCancelar()) {
                     api.stopDownload();
@@ -132,15 +137,18 @@ int main(void) {
             if (gui.buttonAnterior()) {
                 if (tweetIndex > 0) {
                     tweetIndex--;
-                    // AVISAR QUE SE CAMBIO DE TWEET
+                    resetScroll(scroll, LCD_COUNT);
+                    clearLCDs(lcds);
                 }
             }
             if (gui.buttonRepetir()) {
-                // HACER ACCION DE REPETIR
+                resetScroll(scroll, LCD_COUNT);
+                clearLCDs(lcds);
             }
             if (gui.buttonSiguiente()) {
                 tweetIndex++;
-                // AVISAR QUE SE CAMBIO DE TWEET
+                resetScroll(scroll, LCD_COUNT);
+                clearLCDs(lcds);
             }
 
             if (tweetIndex < tweets.size()) {
@@ -151,7 +159,7 @@ int main(void) {
                     if (lcd != nullptr) {
 
 
-                        nexttwit = scroll[i].timerDisplay(lcd, tweets[tweetIndex].getText(), tweets[tweetIndex].getUser(),(int)conf.getSpeed());
+                        nexttwit = scroll[i].timerDisplay(lcd, tweets[tweetIndex].getText(), tweets[tweetIndex].getDate(),(int)conf.getSpeed());
                     }
                 }
 
@@ -183,7 +191,7 @@ int main(void) {
 	return 0;
 }
 
-void deleteLCDs(vector<basicLCD*> lcds) {
+void deleteLCDs(vector<basicLCD*>& lcds) {
     for (basicLCD* lcd : lcds) {
            if (lcd != nullptr) {
                delete lcd;
@@ -192,11 +200,24 @@ void deleteLCDs(vector<basicLCD*> lcds) {
 }
 
 
-void printToLCDs(vector<basicLCD*> lcds, string text) {
+void printToLCDs(vector<basicLCD*>& lcds, string text) {
     for (basicLCD* lcd : lcds) {
            if (lcd != nullptr) {
                lcd->lcdClear();
                *lcd << text.c_str();
            }
     }
+}
+
+void clearLCDs(vector<basicLCD*>& lcds) {
+for (basicLCD* lcd : lcds) {
+    if (lcd != nullptr) {
+        lcd->lcdClear();
+    }
+}
+}
+
+void resetScroll(scrolling*& scrolls, unsigned int size) {
+    delete[] scrolls;
+    scrolls = new scrolling[size];  // Destruyo y los creo nuevamente
 }
