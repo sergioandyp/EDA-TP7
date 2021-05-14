@@ -52,6 +52,7 @@ int main(void) {
     vector<Tweet> tweets;
     Graphics gui;
     scrolling* scroll = new scrolling[LCD_COUNT];
+    scrolling* loadScroll = new scrolling[LCD_COUNT];
     int tweetIndex = 0;
     bool nexttwit = false;
 
@@ -97,22 +98,35 @@ int main(void) {
                 }
                 else {
                     downloadState = DOWNLOADING;
+                    resetScroll(loadScroll, LCD_COUNT);
                 }
                 
            }
 
            
         if (downloadState == DOWNLOADING) {
+            
+            for (int i = 0; i < LCD_COUNT; i++) {       // Muestra de que esta cargando
+                basicLCD* lcd = lcds[i];
+                if (lcd != nullptr) {
+                    if (loadScroll[i].timerDisplay(lcd, "-", "", 9)) {
+                        loadScroll[i].settwitMostrado(false);
+                    }
+                }
+            }
+
             if (api.runDownload()) {
                 
                 if(gui.buttonCancelar()) {
                     api.stopDownload();
                     downloadState = NOT_DOWNLOADING;
+                    clearLCDs(lcds);
                 }
 
             }
             else {
                 downloadState = DOWNLOADED;
+                tweets.clear();
             }
         }
 
@@ -128,6 +142,7 @@ int main(void) {
             else {
                 downloadState = DISPLAY_DOWNLOAD;
                 tweetIndex = 0;
+                clearLCDs(lcds);
             }
 
         }
@@ -157,8 +172,6 @@ int main(void) {
                 for (int i = 0; i < lcds.size(); i++) {
                     basicLCD* lcd = lcds[i];
                     if (lcd != nullptr) {
-
-
                         nexttwit = scroll[i].timerDisplay(lcd, tweets[tweetIndex].getText(), tweets[tweetIndex].getDate(),(int)conf.getSpeed());
                     }
                 }
@@ -182,7 +195,7 @@ int main(void) {
             gui.buttonSiguiente();      // antiguos.
         }
 
-        }
+    }
 
     deleteLCDs(lcds);
 

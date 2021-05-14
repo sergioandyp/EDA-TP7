@@ -10,7 +10,7 @@ void scrolling::titulo(basicLCD* lcd, string usuario) {
 	cursor.row = 0;
 	lcd->lcdSetCursorPosition(cursor);
 	string s = usuario.substr(0, 16);
-	cout << s << endl;
+	//cout << s << endl;
 	char* cstr = new char[s.length() + 1];						//
 	std::strcpy(cstr, s.c_str());
 
@@ -78,7 +78,7 @@ void scrolling::movechar(basicLCD* lcd, int cursor, const unsigned char c) {
 
 bool scrolling::timerDisplay(basicLCD* lcd, string twit, string  usuario, int velocidad) {
 	if (usuar == 0 && twitMostrado == false) {
-		cout << "titulo" << endl;
+		//cout << "titulo" << endl;
 		titulo(lcd, usuario);
 		usuar = 1;
 
@@ -87,7 +87,7 @@ bool scrolling::timerDisplay(basicLCD* lcd, string twit, string  usuario, int ve
 	setVel(velocidad);
 	if (true == scrollingOK()) {
 		if (twitMostrado == true) {
-			cout << "llegue la final del tweet" << endl;
+			//cout << "llegue la final del tweet" << endl;
 			return twitMostrado;
 		}
 		if (al_get_next_event(event_queue, &ev)) //Toma un evento de la cola, .
